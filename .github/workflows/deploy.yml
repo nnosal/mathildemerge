@@ -9,6 +9,10 @@ on:
       - main
 
 jobs:
+permissions:
+  id-token: write
+  pages: write
+  contents: read
   deploy:
     runs-on: ubuntu-latest
     steps:
