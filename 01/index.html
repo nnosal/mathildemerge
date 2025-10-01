@@ -1,0 +1,2480 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF16">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz-02-Presentation-de-la-Gestion-de-la-Paie</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Styles de base pour le corps de la page */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #dbeafe; /* Fond bleu très clair (Tailwind blue-50) */
+            color: #333; /* Texte foncé par défaut pour le mode clair */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Hauteur minimale de la fenêtre */
+            padding: 20px;
+            box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease; /* Transition douce pour le changement de thème */
+        }
+
+        /* Styles du mode sombre */
+        body.dark-mode {
+            background-color: #1a202c; /* Fond gris foncé */
+            color: #e2e8f0; /* Texte clair pour le mode sombre */
+        }
+        body.dark-mode .quiz-container {
+            background-color: #2d3748; /* Gris plus foncé pour le conteneur */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        body.dark-mode .question-text {
+            color: #e2e8f0; /* Assure que le texte de la question est clair en mode sombre */
+        }
+        body.dark-mode .answer-option {
+            background-color: #4a5568;
+            color: #e2e8f0; /* Assure que le texte de l'option est clair en mode sombre */
+        }
+        body.dark-mode .answer-option:hover {
+            background-color: #616e7f;
+        }
+        body.dark-mode .answer-option.correct {
+            background-color: #2c5282; /* Bleu plus foncé */
+            border-color: #4299e1;
+        }
+        body.dark-mode .answer-option.incorrect {
+            background-color: #805ad5; /* Rose/violet plus foncé */
+            border-color: #d6bcfa;
+        }
+        body.dark-mode .answer-option.selected {
+            background-color: #d69e2e; /* Jaune plus foncé */
+            border-color: #f6e05e;
+        }
+        body.dark-mode .rationale {
+            background-color: #4a5568;
+            color: #e2e8f0;
+            border-left-color: #63b3ed;
+        }
+        body.dark-mode .rationale.correct-rationale {
+            background-color: #2c5282;
+            border-left-color: #4299e1;
+        }
+        body.dark-mode .rationale.incorrect-rationale {
+            background-color: #805ad5;
+            border-left-color: #d6bcfa;
+        }
+        body.dark-mode .rationale.selected-rationale {
+            background-color: #d69e2e;
+            border-left-color: #f6e05e;
+        }
+        body.dark-mode .button {
+            background-color: #4299e1;
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.5);
+        }
+        body.dark-mode .button:hover {
+            background-color: #3182ce;
+        }
+        body.dark-mode .button:disabled {
+            background-color: #718096;
+        }
+        body.dark-mode .progress-bar {
+            background-color: #4a5568;
+        }
+        body.dark-mode .unanswered-section {
+            background-color: #63b3ed;
+            color: #2d3748; /* Texte foncé pour le bleu clair en mode sombre */
+        }
+        body.dark-mode .score-display {
+            color: #e2e8f0; /* Assure que le score-display est clair en mode sombre */
+        }
+        body.dark-mode .hint-text, body.dark-mode .pre-choice-hint {
+            color: #a0aec0;
+        }
+        body.dark-mode .interactive-hint-display {
+            background-color: #4a5568;
+            border-color: #f6e05e;
+            color: #e2e8f0;
+        }
+        body.dark-mode .footer-links {
+            background-color: #2d3748;
+            border-top-color: #4a5568;
+            color: #e2e8f0; /* Rend le texte du pied de page explicitement clair */
+        }
+        body.dark-mode .footer-links a {
+            color: #63b3ed;
+        }
+        body.dark-mode .footer-links a:hover {
+            color: #4299e1;
+        }
+        body.dark-mode .footer-links .discord-button {
+            background-color: #7289da;
+            color: white; /* Assure que le texte est blanc pour le bouton discord en mode sombre */
+        }
+        body.dark-mode .footer-links .discord-button:hover {
+            background-color: #677bc4;
+        }
+        body.dark-mode .footer-links .whatsapp-button {
+            background-color: #25D366;
+            color: white; /* Assure que le texte est blanc pour le bouton whatsapp en mode sombre */
+        }
+        body.dark-mode .whatsapp-button svg {
+            fill: white; /* Assure que l'icône SVG est blanche en mode sombre */
+        }
+        body.dark-mode .discord-button svg {
+            fill: white; /* Assure que l'icône SVG est blanche en mode sombre */
+        }
+        body.dark-mode .footer-links .whatsapp-button:hover {
+            background-color: #1DA851;
+        }
+        body.dark-mode .theme-switcher {
+            background-color: #4a5568;
+            color: #e2e8f0;
+            border: 1px solid #616e7f;
+        }
+        body.dark-mode .theme-switcher:hover {
+            background-color: #616e7f;
+        }
+
+
+        /* Conteneur principal du quiz */
+        .quiz-container {
+            background-color: #ffffff; /* Fond blanc */
+            border-radius: 15px; /* Coins arrondis */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Ombre douce */
+            padding: 30px;
+            max-width: 800px; /* Largeur maximale pour la lisibilité */
+            width: 100%; /* Pleine largeur sur petits écrans */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Espacement entre les éléments */
+        }
+        /* Style du texte de la question */
+        .question-text {
+            font-size: 1.5rem; /* Taille de police plus grande */
+            font-weight: 600; /* Semi-gras */
+            color: #333; /* Texte gris foncé */
+            margin-bottom: 20px;
+        }
+        /* Style des options de réponse individuelles */
+        .answer-option {
+            background-color: #e2e8f0; /* Gris-bleu clair */
+            border-radius: 10px; /* Coins arrondis */
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            cursor: pointer; /* Indique que l'élément est clickable */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Transitions douces */
+            text-align: left;
+            font-size: 1.1rem;
+            color: #4a5568; /* Texte gris moyen */
+            border: 2px solid transparent; /* Bordure transparente pour la sélection */
+        }
+        /* Effet au survol des options de réponse */
+        .answer-option:hover {
+            background-color: #93c5fd; /* Bleu plus doux (Tailwind blue-300) au survol */
+            transform: translateY(-2px); /* Léger effet de soulèvement */
+        }
+        /* Style de l'option de réponse correcte */
+        .answer-option.correct {
+            background-color: #bfdbfe; /* Bleu-200 */
+            border-color: #3b82f6; /* Bleu-500 */
+        }
+        /* Style de l'option de réponse incorrecte */
+        .answer-option.incorrect {
+            background-color: #fce7f6; /* Pink-100 (plus clair) */
+            border-color: #ec4899; /* Pink-500 (plus fuchsia) */
+        }
+        /* Style de l'option de réponse sélectionnée par l'utilisateur */
+        .answer-option.selected {
+            background-color: #fffef0; /* Jaune-100 */
+            border-color: #eab308; /* Jaune-500 */
+        }
+        /* Style du texte de la justification (rationale) */
+        .rationale {
+            font-size: 0.95rem;
+            margin-top: 5px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: left;
+            color: #4a5568;
+            background-color: #f0f2f5;
+            border-left: 4px solid #60a5fa; /* Bordure gauche bleue-400 */
+        }
+        /* Style spécifique de la justification pour les réponses correctes */
+        .rationale.correct-rationale {
+            border-left-color: #3b82f6; /* Bleu-500 */
+            background-color: #e0f2fe; /* Bleu-100 */
+        }
+        /* Style spécifique de la justification pour les réponses incorrectes */
+        .rationale.incorrect-rationale {
+            border-left-color: #ec4899; /* Pink-500 (plus fuchsia) */
+            background-color: #fce7f6; /* Pink-100 (plus clair) */
+        }
+        /* Style spécifique de la justification pour la réponse sélectionnée par l'utilisateur */
+        .rationale.selected-rationale {
+            border-left-color: #eab308; /* Jaune-500 */
+            background-color: #fffef0; /* Jaune-100 */
+        }
+        /* Style général des boutons */
+        .button {
+            background-color: #1d4ed8; /* Fond bleu profond (Tailwind blue-700) */
+            color: white; /* Texte blanc */
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Transitions douces */
+            border: none;
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3); /* Ombre douce */
+        }
+        /* Effet au survol des boutons */
+        .button:hover {
+            background-color: #1e40af; /* Bleu plus foncé au survol (Tailwind blue-800) */
+            transform: translateY(-2px); /* Léger effet de soulèvement */
+        }
+        /* État désactivé des boutons */
+        .button:disabled {
+            background-color: #a0aec0; /* Grisé lorsque désactivé */
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        /* Conteneur de la barre de progression */
+        .progress-bar {
+            width: 100%;
+            height: 20px; /* Plus épais */
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px; /* Moins de marge pour rapprocher du score */
+            display: flex; /* Utiliser flexbox pour les segments */
+            font-weight: bold; /* Texte en gras dans la barre */
+            color: white; /* Texte blanc par default pour les sections colorées */
+            font-size: 0.9em; /* Taille du texte dans la barre */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* Ombre pour la lisibilité */
+        }
+        /* Sections de la barre de progression et du graphique final */
+        .progress-section {
+            height: 100%;
+            display: flex; /* Pour centrer le texte */
+            align-items: center;
+            justify-content: center;
+            transition: width 0.3s ease-in-out; /* Transition de largeur douce */
+            box-sizing: border-box; /* Pour inclure padding/border dans la largeur */
+        }
+        .correct-section { background-color: #1d4ed8; } /* Bleu profond (Tailwind blue-700) */
+        .incorrect-section { background-color: #ec4899; } /* Fuchsia */
+        .unanswered-section { background-color: #93c5fd; color: #4a5568; text-shadow: none; } /* Bleu doux (Tailwind blue-300), texte foncé */
+        /* Style de l'affichage du score final */
+        .score-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d3748; /* Texte gris foncé */
+            margin-bottom: 20px;
+        }
+        /* Style du texte de l'indice */
+        .hint-text {
+            font-style: italic;
+            color: #718096; /* Texte gris atténué */
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .live-score-display {
+            font-size: 1.1rem; /* Plus grand */
+            font-weight: 600; /* Plus gras */
+            color: #333;
+            margin-top: 0px; /* Moins de marge pour rapprocher de la barre */
+            margin-bottom: 10px;
+            text-align: center; /* Centrer le texte */
+        }
+
+        /* Style spécifique pour la barre de résultats finaux */
+        .final-results-chart-container {
+            height: 30px; /* Plus épais pour le graphique final */
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        /* Pour le graphique final, on ne veut qu'une seule section pour le correct */
+        .final-results-chart-container .incorrect-section,
+        .final-results-chart-container .unanswered-section {
+            display: none; /* Cacher ces sections dans le graphique final */
+        }
+        .final-results-chart-container .correct-section {
+            width: 100% !important; /* Force la section correcte à prendre toute la largeur disponible */
+            justify-content: center; /* Centrer le texte */
+        }
+        /* Style pour le message de bonus */
+        .bonus-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .bonus-message.success {
+            background-color: #d1fae5; /* Vert très clair */
+            color: #065f46; /* Vert foncé */
+            border: 1px solid #34d399;
+        }
+        .bonus-message.info {
+            background-color: #e0f2fe; /* Bleu très clair */
+            color: #2563eb; /* Bleu foncé */
+            border: 1px solid #60a5fa;
+        }
+
+        /* Style pour l'indice interactif */
+        .interactive-hint-display {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            font-style: italic;
+            color: #718096; /* Texte gris */
+            background-color: #fef3c7; /* Fond jaune très clair */
+            border: 1px solid #fcd34d; /* Bordure jaune */
+            text-align: center;
+            font-size: 1rem;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Transition douce */
+        }
+
+        /* Animation de fondu */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Style pour l'indice avant choix */
+        .pre-choice-hint {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f0f9ff; /* Bleu très très clair */
+            color: #3b82f6; /* Bleu plus prononcé */
+            font-style: italic;
+            text-align: center;
+            font-size: 0.95rem;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* Styles pour les logos SVG */
+        .footer-links svg {
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+            display: inline-block; /* Pour aligner avec le texte */
+        }
+        .footer-links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #cbd5e0; /* Bordure fine grise */
+            font-size: 0.85rem; /* Texte plus petit */
+            color: #4a5568;
+        }
+        .footer-links a {
+            color: #1d4ed8; /* Bleu profond pour les liens */
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .footer-links a:hover {
+            color: #1e40af; /* Bleu plus foncé au survol */
+            text-decoration: underline;
+        }
+        .footer-links .discord-button {
+            background-color: #5865F2; /* Couleur Discord */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .footer-links .discord-button:hover {
+            background-color: #4752C4;
+        }
+        .footer-links .whatsapp-button {
+            background-color: #25D366; /* Couleur WhatsApp */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+        }
+        .footer-links .whatsapp-button:hover {
+            background-color: #1DA851;
+        }
+
+        /* Styles pour le mode révision */
+        .review-question-card {
+            background-color: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .review-question-card.dark-mode {
+            background-color: #3b4553;
+        }
+        .review-question-card .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .review-question-card.dark-mode .question-text {
+            color: #e2e8f0;
+        }
+        .review-question-card .user-answer,
+        .review-question-card .correct-answer {
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .review-question-card .user-answer {
+            background-color: #fffef0; /* Jaune-100 */
+            border: 1px solid #eab308; /* Jaune-500 */
+        }
+        .review-question-card.dark-mode .user-answer {
+            background-color: #d69e2e;
+            border-color: #f6e05e;
+        }
+        .review-question-card .correct-answer {
+            background-color: #e0f2fe; /* Bleu-100 */
+            border: 1px solid #3b82f6; /* Bleu-500 */
+        }
+        .review-question-card.dark-mode .correct-answer {
+            background-color: #2c5282;
+            border-color: #4299e1;
+        }
+        .review-question-card .rationale {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            background-color: #f0f2f5;
+            border-left: 4px solid #60a5fa;
+            color: #4a5568;
+        }
+        .review-question-card.dark-mode .rationale {
+            background-color: #4a5568;
+            border-left-color: #63b3ed;
+            color: #e2e8f0;
+        }
+        .review-question-card .result-icon {
+            font-size: 1.5em;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        /* Styles pour le Glossaire */
+        .glossary-term {
+            text-align: left;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f0f9ff; /* Bleu clair */
+            border: 1px solid #bfdbfe;
+            transition: background-color 0.3s ease;
+        }
+        .glossary-term.dark-mode {
+            background-color: #3b4553;
+            border-color: #4a5568;
+        }
+        .glossary-term h3 {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #2563eb; /* Bleu */
+            margin-bottom: 5px;
+        }
+        .glossary-term.dark-mode h3 {
+            color: #f48fb1; /* Rose plus clair pour le titre du glossaire en mode sombre */
+        }
+        .glossary-term p {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #4a5568;
+        }
+        .glossary-term.dark-mode p {
+            color: #e2e8f0;
+        }
+
+        /* Styles pour la sélection du mode de jeu */
+        .game-mode-selection {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .game-mode-selection label {
+            font-weight: 500;
+            color: #333;
+        }
+        body.dark-mode .game-mode-selection label {
+            color: #e2e8f0;
+        }
+        .game-mode-selection select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            background-color: #edf2f7;
+            color: #2d3748;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        body.dark-mode .game-mode-selection select {
+            background-color: #4a5568;
+            border-color: #616e7f;
+            color: #e2e8f0;
+        }
+        .game-mode-selection select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.5);
+        }
+
+        /* Affichage des vies */
+        .lives-display {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #e53e3e; /* Rouge pour les vies */
+            margin-bottom: 10px;
+        }
+        body.dark-mode .lives-display {
+            color: #fc8181; /* Rouge plus clair en mode sombre */
+        }
+
+        /* Styles de l'écran du certificat */
+        #certificateScreen {
+            padding: 30px;
+            background-color: #f8fafc;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 5px solid #c2185b; /* Bordure rose foncé */
+            box-shadow: 0 0 0 10px #f48fb1; /* Ombre rose plus claire */
+        }
+        #certificateScreen.dark-mode {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            border: 5px solid #f48fb1; /* Bordure rose claire en mode sombre */
+            box-shadow: 0 0 0 10px #c2185b; /* Ombre rose foncé en mode sombre */
+        }
+        #certificateScreen h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1d4ed8;
+            margin-bottom: 20px;
+        }
+        #certificateScreen.dark-mode h2 {
+            color: #63b3ed;
+        }
+        #certificateScreen p {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #4a5568;
+        }
+        #certificateScreen.dark-mode p {
+            color: #e2e8f0;
+        }
+        #certificateScreen .signature {
+            margin-top: 40px;
+            font-style: italic;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        #certificateScreen.dark-mode .signature {
+            color: #a0aec0;
+        }
+        #certificateScreen input[type="text"] {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            width: 80%;
+            max-width: 300px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #2d3748;
+            background-color: #edf2f7;
+        }
+        #certificateScreen.dark-mode input[type="text"] {
+            background-color: #4a5568;
+            border-color: #616e7f;
+            color: #e2e8f0;
+        }
+        #certificateScreen .club-logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1d4ed8;
+            margin-top: 20px;
+        }
+        #certificateScreen.dark-mode .club-logo-text {
+            color: #63b3ed;
+        }
+
+        /* Couleur spécifique pour le titre principal */
+        h1.main-quiz-title {
+            color: #c2185b; /* Rose foncé pour le mode clair */
+        }
+        body.dark-mode h1.main-quiz-title {
+            color: #f48fb1; /* Rose plus clair pour le mode sombre */
+        }
+
+        /* Couleur spécifique pour le titre du glossaire */
+        #glossaryScreen h2 {
+            color: #c2185b; /* Rose foncé pour le mode clair */
+        }
+        body.dark-mode #glossaryScreen h2 {
+            color: #f48fb1; /* Rose plus clair pour le mode sombre */
+        }
+        /* Couleur spécifique pour le texte de l'écran des résultats */
+        #resultsScreen .score-display,
+        #resultsScreen p {
+            color: #2d3748; /* Texte foncé par défaut pour le mode clair */
+        }
+        body.dark-mode #resultsScreen .score-display,
+        body.dark-mode #resultsScreen p {
+            color: #e2e8f0; /* Texte clair pour le mode sombre */
+        }
+
+        /* Couleur spécifique pour le texte des statistiques dans l'écran des résultats */
+        .stats-text-color {
+            color: #c2185b; /* Rose foncé pour le mode clair */
+        }
+        body.dark-mode .stats-text-color {
+            color: #f48fb1; /* Rose plus clair pour le mode sombre */
+        }
+
+        /* Styles spécifiques pour l'impression du certificat */
+        @media print {
+            body * {
+                visibility: hidden; /* Cache tout par défaut */
+            }
+            #certificateScreen, #certificateScreen * {
+                visibility: visible; /* Rend le certificat visible */
+                color: black !important; /* Force le texte en noir pour l'impression */
+                background-color: white !important; /* Force le fond blanc */
+                box-shadow: none !important; /* Supprime les ombres */
+                text-shadow: none !important; /* Supprime les ombres de texte */
+            }
+            #certificateScreen {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 50px; /* Ajoute du padding pour un encadrement visuel */
+                border: 5mm solid #c2185b !important; /* Bordure plus épaisse pour le diplôme */
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+            #certificateScreen h2,
+            #certificateScreen p,
+            #certificateScreen .signature,
+            #certificateScreen .club-logo-text {
+                color: black !important; /* Assure que tous les textes sont noirs */
+            }
+            #certificateScreen .club-logo-text {
+                font-size: 1.8rem; /* Rendre le logo texte plus grand */
+                color: #c2185b !important; /* Garder la couleur rose foncé pour le logo */
+            }
+            #certificateScreen .signature {
+                color: #333 !important; /* Signature en gris foncé */
+            }
+            #certificateScreen #userNameInput {
+                border: none; /* Supprime la bordure du champ de saisie */
+                border-bottom: 2px solid black; /* Ajoute une ligne de signature */
+                width: 70%;
+                background-color: transparent !important;
+                color: black !important;
+                font-weight: bold;
+                font-size: 1.5rem;
+                padding: 5px 0;
+                margin-bottom: 20px;
+            }
+            /* Masquer les boutons d'impression et de retour */
+            #certificateScreen button {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 main-quiz-title">🧠💡 02 Présentation de la Gestion de la Paie 📚✨</h1>
+
+        <!-- Sélecteur de thème et de son -->
+        <div class="flex justify-end gap-2 mb-4">
+            <button id="themeSwitcher" class="theme-switcher bg-gray-200 text-gray-800 py-2 px-4 rounded-full shadow-md transition-colors duration-300">
+                Basculer le thème
+            </button>
+            <button id="soundToggle" class="theme-switcher bg-gray-200 text-gray-800 py-2 px-4 rounded-full shadow-md transition-colors duration-300">
+                🔊 Muet
+            </button>
+        </div>
+
+        <!-- Écran de démarrage -->
+        <div id="startScreen" class="text-center p-6">
+            <p class="text-xl text-gray-700 mb-6">Bienvenue au Quiz interactif sur la Présentation de la Gestion de la Paie !</p>
+            <p class="text-lg text-gray-600 mb-8">
+                <span class="text-2xl">🎉</span> Ce quiz est proposé par <span class="font-bold text-blue-700">🔥Payroll Boss Elite Club 👑</span> ! <span class="text-2xl">🚀</span>
+            </p>
+
+            <div class="game-mode-selection">
+                <label for="gameModeSelect">Choisissez un mode de jeu :</label>
+                <select id="gameModeSelect">
+                    <option value="normal">Mode Normal (avec minuteur)</option>
+                    <option value="survival">Mode Survie (3 vies)</option>
+                </select>
+            </div>
+
+            <div class="game-mode-selection">
+                <label for="numQuestionsSelect">Nombre de questions :</label>
+                <select id="numQuestionsSelect">
+                    <option value="5">5 questions</option>
+                    <option value="10">10 questions</option>
+                    <option value="15">15 questions</option>
+                    <option value="all">Toutes les questions</option>
+                </select>
+            </div>
+
+            <button id="startButton" class="button">Commencer le Quiz</button>
+            <button id="continueButton" class="button mt-4 hidden">Continuer le Quiz (progression sauvegardée)</button>
+            <button id="glossaryButtonStart" class="button mt-4 ml-4 bg-gray-600 hover:bg-gray-700">Glossaire</button>
+        </div>
+
+        <!-- Écran du quiz -->
+        <div id="quizScreen" class="hidden">
+            <div id="timerDisplay" class="text-xl font-bold text-gray-700 mb-4">Temps restant : --:--</div>
+            <div id="livesDisplay" class="lives-display hidden">Vies restantes : </div>
+            <div id="liveScoreDisplay" class="live-score-display"></div>
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-section correct-section" id="correctProgress"></div>
+                <div class="progress-section incorrect-section" id="incorrectProgress"></div>
+                <div class="progress-section unanswered-section" id="unansweredProgress"></div>
+            </div>
+            <div id="quiz" class="flex flex-col gap-4">
+                <!-- La question et les réponses seront chargées ici par JavaScript -->
+            </div>
+            <div id="navigation" class="flex justify-between mt-6">
+                <button id="prevButton" class="button" disabled>Précédent</button>
+                <button id="nextButton" class="button">Suivant</button>
+            </div>
+        </div>
+
+        <!-- Écran des résultats -->
+        <div id="resultsScreen" class="hidden text-center">
+            <!-- Les résultats seront affichés ici par JavaScript -->
+            <button id="reviewButton" class="button mt-6">Revoir les réponses</button>
+            <button id="restartButton" class="button mt-6 ml-4">Recommencer le Quiz</button>
+            <button id="glossaryButtonResults" class="button mt-6 ml-4 bg-gray-600 hover:bg-gray-700">Glossaire</button>
+            <button id="certificateButton" class="button mt-6 ml-4 bg-yellow-500 hover:bg-yellow-600 hidden">Voir mon Certificat</button>
+        </div>
+
+        <!-- Écran du mode révision -->
+        <div id="reviewModeScreen" class="hidden text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Revue des Réponses</h2>
+            <div id="reviewQuestionsContainer" class="flex flex-col gap-4">
+                <!-- Les questions révisées seront insérées ici -->
+            </div>
+            <button id="backToResultsButton" class="button mt-6">Retour aux Résultats</button>
+        </div>
+
+        <!-- Écran du glossaire -->
+        <div id="glossaryScreen" class="hidden text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Glossaire de la Présentation de la Gestion de la Paie</h2>
+            <div id="glossaryContent" class="text-left">
+                <!-- Les termes du glossaire seront chargés ici -->
+            </div>
+            <button id="backToStartFromGlossary" class="button mt-6">Retour à l'Accueil</button>
+        </div>
+
+        <!-- Écran du certificat -->
+        <div id="certificateScreen" class="hidden">
+            <h2 class="text-3xl font-bold mb-4">Certificat de Réussite</h2>
+            <p class="text-xl mb-2">Ce certificat est décerné à</p>
+            <input type="text" id="userNameInput" placeholder="Votre Nom" class="text-center" />
+            <p class="text-xl mt-4">pour avoir complété le Quiz sur la Présentation de la Gestion de la Paie avec un score de</p>
+            <p class="text-4xl font-bold text-blue-700 my-4" id="certificateScore">XX points</p>
+            <p class="text-xl">en date du <span id="certificateDate"></span></p>
+            <p class="club-logo-text mt-8">🔥Payroll Boss Elite Club 👑</p>
+            <p class="signature">✨Énervante Énervante 🥳</p>
+            <button id="printCertificateButton" class="button mt-6 bg-green-500 hover:bg-green-600">Imprimer le Certificat</button>
+            <button id="backToResultsFromCertificate" class="button mt-6 ml-4">Retour aux Résultats</button>
+        </div>
+
+        <!-- Liens de pied de page -->
+        <div class="footer-links mt-8 p-4 bg-gray-100 rounded-lg shadow-inner text-center">
+            <p class="text-lg font-semibold text-gray-700 mb-4">
+                🚀 Prêt(e) à aller plus loin ? Rejoignez notre communauté pour échanger et progresser ensemble !
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="https://discord.gg/cBnBkGDFgk" target="_blank" class="discord-button">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M20.22 0H3.78C1.7 0 0 1.7 0 3.78v16.44C0 22.3 1.7 24 3.78 24h16.44c2.08 0 3.78-1.7 3.78-3.78V3.78C24 1.7 22.3 0 20.22 0zM17.22 17.22H6.78V6.78h10.44v10.44zm-1.04-7.29a.94.94 0 01-.94.94h-2.18v2.18a.94.94 0 01-1.88 0v-2.18H8.81a.94.94 0 010-1.88h2.18V8.81a.94.94 0 011.88 0v2.18h2.18a.94.94 0 01.94.94z"/>
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.219 17.839c-.469.096-.948.145-1.428.145-1.921 0-3.842-.73-5.303-2.191-1.46-1.46-2.191-3.382-2.191-5.303 0-.48.049-.959.145-1.428.096-.469.23-.92.399-1.348.17-.428.375-.83.615-1.205.24-.375.508-.72.804-1.034.296-.314.62-.59.972-.828.352-.238.72-.435 1.104-.588.384-.153.78-.261 1.188-.324.408-.063.82-.093 1.23-.093.41 0 .82.03 1.23.093.408.063.816.171 1.188.324.384.153.752.35 1.104.588.352.238.676.514.972.828.296.314.564.659.804 1.034.24.375.445.777.615 1.205.17.428.303.879.399 1.348.096.469.145.948.145 1.428 0 1.921-.73 3.842-2.191 5.303-1.46 1.46-3.382 2.191-5.303 2.191zM12 19.5c-4.142 0-7.5-3.358-7.5-7.5S7.858 4.5 12 4.5s7.5 3.358 7.5 7.5-3.358 7.5-7.5 7.5zM12 5c-3.866 0-7 3.134-7 7s3.134 7 7 7 7-3.134 7-7-3.134-7-7-7z"/>
+                    </svg>
+                    Discord 🔥 Payroll Boss Elite Club : Le Hub Paie & Progrès 📈
+                </a>
+                <a href="https://chat.whatsapp.com/EtV0ux5ipAG5JDhopzo0ut" target="_blank" class="whatsapp-button">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12.03 2.03c-5.52 0-10 4.48-10 10s4.48 10 10 10 10-4.48 10-10-4.48-10-10-10zm.01 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.82-10.15c-.22-.12-.49-.18-.77-.18-.28 0-.55.06-.77.18-.22.12-.39.29-.49.49-.1.2-.15.44-.15.71 0 .27.05.5.15.71.1.2.27.37.49.49.22.12.49.18.77.18.28 0 .55-.06.77-.18.22-.12.39-.29.49-.49.1-.2.15-.44.15-.71 0-.27-.05-.5-.15-.71-.1-.2-.27-.37-.49-.49zm-7.64 0c-.22-.12-.49-.18-.77-.18-.28 0-.55.06-.77.18-.22.12-.39.29-.49.49-.1.2-.15.44-.15.71 0 .27.05.5.15.71.1.2.27.37.49.49.22.12.49.18.77.18.28 0 .55-.06.77-.18.22-.12.39-.29.49-.49.1-.2.15-.44.15-.71 0-.27-.05-.5-.15-.71-.1-.2-.27-.37-.49-.49z"/>
+                    </svg>
+                    WhatsApp 🔥 | Payroll Boss Elite Club 👑| Infos & Actus
+                </a>
+            </div>
+            <p class="text-xs mt-4 text-gray-500">
+                © <span id="currentYear"></span> <span id="copyrightText">Payroll Boss Elite Club. Tous droits réservés.</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Données du quiz
+        const quizData = {
+            "questions": [
+                {
+                    "question": "Quel est le rôle principal du 'Service Paie' en entreprise, tel que décrit dans les organisations de gestion de la paie ?",
+                    "hint": "Il s'agit d'une fonction axée sur la conformité et la production de documents.",
+                    "preChoiceHint": "Le Service Paie, c'est un peu le gardien du temple des chiffres et des règles ! 🏛️",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Gérer les recrutements et les départs de salariés.",
+                            "rationale": "❌ Cette tâche relève généralement du service du personnel ou de la Direction des Ressources Humaines, pas spécifiquement du Service Paie.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Se conformer à la législation sociale et produire les documents sociaux obligatoires.",
+                            "rationale": "✅ Le Service Paie est essentiellement cantonné à des tâches dont l'objectif principal est de se conformer à la législation sociale et de produire tous les documents sociaux obligatoires (contrats de travail, attestations, certificats, bulletins de salaire et déclarations sociales).",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Définir la politique de rémunération de l'entreprise.",
+                            "rationale": "❌ La définition de la politique de rémunération est une fonction stratégique qui relève généralement de la Direction des Ressources Humaines ou de la Direction Générale.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Assurer la gestion des relations entre membres du personnel.",
+                            "rationale": "❌ Cette dimension de gestion des relations est prise en charge par le Service du Personnel, qui a un champ d'action plus étendu que le simple Service Paie.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Quelle est la principale caractéristique des tâches du 'Service Paie' en entreprise ?",
+                    "hint": "Pensez à leur nature et leur fréquence.",
+                    "preChoiceHint": "La paie, c'est comme une horloge suisse : ça doit être précis et régulier ! ⏰",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Elles sont principalement ponctuelles et imprévisibles.",
+                            "rationale": "❌ Les tâches du Service Paie sont décrites comme étant quantifiables, régulières et aisément planifiables, et non ponctuelles ou imprévisibles.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Elles sont quantifiables, régulières et aisément planifiables.",
+                            "rationale": "✅ Les tâches du Service Paie sont caractérisées par leur nature quantifiable, régulière et aisément planifiable, ce qui permet une organisation efficace de cette fonction.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Elles nécessitent une grande adaptabilité aux changements quotidiens.",
+                            "rationale": "❌ Bien que l'adaptabilité soit une qualité requise pour le gestionnaire de paie en général, la nature des tâches du Service Paie en entreprise est plus axée sur la régularité et la planification.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Elles sont majoritairement axées sur la mission de conseil.",
+                            "rationale": "❌ La mission de conseil est plus caractéristique d'un pôle social en cabinet d'expertise comptable, pas du rôle principal d'un Service Paie en entreprise.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Comment le 'Service du Personnel' se distingue-t-il du 'Service Paie' en entreprise ?",
+                    "hint": "Pensez à l'étendue de son champ d'action.",
+                    "preChoiceHint": "Le Service du Personnel a une vision plus large que le Service Paie. C'est le grand frère ! 🧑‍🤝‍🧑",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Il est uniquement chargé de la production des bulletins de paie.",
+                            "rationale": "❌ C'est la fonction principale du Service Paie, tandis que le Service du Personnel a un champ d'action plus étendu.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Il ajoute une dimension de gestion des relations entre membres du personnel et entre salarié(s) et employeur.",
+                            "rationale": "✅ Le Service du Personnel a un champ d'action plus étendu que le Service Paie, en y ajoutant la gestion des relations entre les membres du personnel et entre les salariés et l'employeur, ainsi que l'apport d'outils d'aide à la décision pour l'employeur.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Il est toujours intégré à une direction comptable.",
+                            "rationale": "❌ Le Service du Personnel est souvent intégré à une direction financière et s'affranchit de l'autorité du service comptable, contrairement au Service Paie qui peut y être intégré.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Il est exclusivement dédié à la gestion des carrières et de la formation.",
+                            "rationale": "❌ Ces tâches peuvent faire partie de ses attributions, mais le rôle principal du Service du Personnel est plus large, incluant la gestion des relations et les obligations sociales.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Quelle est l'une des principales raisons pour laquelle une entreprise choisit d'externaliser la gestion de sa paie ?",
+                    "hint": "Pensez à la complexité et à l'évolution constante des règles.",
+                    "preChoiceHint": "Pourquoi faire soi-même quand un expert peut le faire mieux et vous libérer l'esprit ! 🤔",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Pour réduire le salaire de base des employés.",
+                            "rationale": "❌ L'externalisation est une stratégie de gestion administrative, pas un moyen de réduire directement les salaires des employés.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Pour s'affranchir des contraintes et responsabilités liées à l'évolution constante des règles de paie.",
+                            "rationale": "✅ Les règles de traitement administratif de la paie sont en constante évolution (modifications périodiques des bases et taux de cotisations, réglementations, conventions, réformes, aides). L'externalisation permet à l'entreprise de transférer cette gestion à un prestataire externe et ainsi de s'affranchir de ces contraintes et responsabilités.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Pour augmenter le contrôle interne sur les données de paie.",
+                            "rationale": "❌ L'externalisation transfère la gestion à un tiers, ce qui peut réduire le contrôle interne direct, bien que le prestataire doive assurer la conformité.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Pour former son personnel interne à la gestion de paie.",
+                            "rationale": "❌ L'externalisation vise à confier la tâche à un spécialiste externe, non à former le personnel interne à cette fonction.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Combien de paies par mois, en moyenne, un cabinet comptable avec un pôle social peut-il traiter ?",
+                    "hint": "Il y a une fourchette de volume de paies traitées par ces cabinets.",
+                    "preChoiceHint": "Les cabinets comptables, ce sont de vraies usines à paie ! 🏭",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Moins de 50 paies.",
+                            "rationale": "❌ Un pôle social en cabinet comptable traite un volume de paies bien plus important que 50 par mois.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Entre 200 et 7 500 paies.",
+                            "rationale": "✅ Les cabinets comptables ayant un pôle social traitent généralement entre 200 et 7 500 paies par mois, ce qui témoigne de leur spécialisation et de leur capacité à gérer des volumes importants.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Plus de 10 000 paies.",
+                            "rationale": "❌ La fourchette moyenne indiquée est inférieure à 10 000 paies par mois pour un pôle social en cabinet comptable.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Environ 50 paies par gestionnaire de paie.",
+                            "rationale": "❌ 50 paies est le nombre moyen de dossiers par gestionnaire de paie, pas le volume total du cabinet. Le volume total est bien plus élevé.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Quelle est l'une des tâches spécifiques au suivi des salariés lors de l'embauche ?",
+                    "hint": "Pensez aux formalités administratives initiales.",
+                    "preChoiceHint": "La première impression compte, surtout pour les papiers ! 📝",
+                    "answerOptions": [
+                        {
+                            "text": "✨ La gestion des congés payés.",
+                            "rationale": "❌ La gestion des congés payés est une tâche de suivi pendant le travail dans l'entreprise, pas spécifiquement à l'embauche.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ L'élaboration et la remise du contrat de travail.",
+                            "rationale": "✅ L'élaboration et la remise du contrat de travail sont des tâches essentielles lors de l'embauche des salariés, faisant partie des démarches administratives initiales.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Le calcul des provisions de fin d'année.",
+                            "rationale": "❌ Le calcul des provisions de fin d'année est une tâche liée à l'élaboration des bulletins de paie et des déclarations sociales, et non au suivi des salariés à l'embauche.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ La gestion des litiges avec les organismes de retraite.",
+                            "rationale": "❌ La gestion des litiges est une tâche qui peut survenir à différents moments, mais n'est pas spécifique au processus d'embauche.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Parmi les qualités suivantes, laquelle est spécifiquement mise en avant pour un gestionnaire de paie en raison du traitement de données confidentielles ?",
+                    "hint": "Pensez à la protection des informations personnelles.",
+                    "preChoiceHint": "Le gestionnaire de paie est un peu comme un coffre-fort humain... mais avec le sourire ! 😉",
+                    "answerOptions": [
+                        {
+                            "text": "✨ L'organisation.",
+                            "rationale": "❌ L'organisation est une qualité importante pour gérer les échéances, mais pas spécifiquement liée à la confidentialité des données.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ La rigueur.",
+                            "rationale": "❌ La rigueur est essentielle pour éviter les erreurs de calcul, mais pas directement pour la confidentialité.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ La discrétion.",
+                            "rationale": "✅ La discrétion est une qualité essentielle requise chez un gestionnaire de paie, notamment en raison du traitement de données confidentielles des salariés.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ La curiosité.",
+                            "rationale": "❌ La curiosité est utile pour suivre l'actualité sociale et les conventions, mais pas pour la confidentialité des données.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Vrai ou Faux : Un gestionnaire de paie en entreprise n'est jamais amené à rédiger un contrat de travail.",
+                    "hint": "Le rôle du gestionnaire de paie peut être étendu dans certaines organisations.",
+                    "preChoiceHint": "Le gestionnaire de paie, un rôle parfois surprenant ! 😲",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Vrai.",
+                            "rationale": "❌ C'est incorrect. Le document indique que le gestionnaire de paie en entreprise peut être amené à établir une fiche de poste ou rédiger un contrat de travail, selon l'organisation de l'entreprise.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Faux.",
+                            "rationale": "✅ Le gestionnaire de paie en entreprise peut être amené à établir une fiche de poste ou rédiger un contrat de travail, ainsi qu'à participer aux activités d'administration du personnel. Son rôle n'est pas limité à la seule production des bulletins.",
+                            "isCorrect": true
+                        }
+                    ],
+                    "interactiveHint": { "text": "Le gestionnaire de paie n'est pas qu'un simple calculateur, c'est aussi un architecte de carrières ! 👷" }
+                },
+                {
+                    "question": "Quel est le statut social d'un gérant minoritaire ou égalitaire de SARL ?",
+                    "hint": "Pensez à sa protection sociale par rapport aux salariés.",
+                    "preChoiceHint": "Certains dirigeants ont un statut un peu hybride... Ni tout à fait salarié, ni tout à fait indépendant. 🤔",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Non-salarié.",
+                            "rationale": "❌ Le gérant minoritaire ou égalitaire de SARL ne relève pas du régime des non-salariés. Ce statut est réservé aux gérants majoritaires ou aux entreprises individuelles.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Assimilé-salarié.",
+                            "rationale": "✅ Les gérants minoritaires ou égalitaires de SARL sont considérés comme des 'assimilés-salariés'. Ils bénéficient de la même protection sociale que les salariés, à l'exception de l'assurance chômage.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Indépendant.",
+                            "rationale": "❌ Le statut d'indépendant est distinct de celui d'assimilé-salarié et ne s'applique pas au gérant minoritaire ou égalitaire de SARL.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Salarié avec contrat de travail.",
+                            "rationale": "❌ Bien qu'il ait une protection sociale similaire, le gérant minoritaire ou égalitaire n'a pas nécessairement un contrat de travail pour son mandat social, sauf cumul de fonctions sous conditions.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Vrai ou Faux : Les dirigeants assimilés-salariés cotisent à l'assurance chômage et peuvent bénéficier de ses prestations.",
+                    "hint": "Il y a une exception importante à leur protection sociale.",
+                    "preChoiceHint": "Même les 'presque' salariés ont leurs petites spécificités ! 😉",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Vrai.",
+                            "rationale": "❌ C'est incorrect. Les dirigeants assimilés-salariés ne cotisent pas à l'assurance chômage et ne peuvent donc pas bénéficier de ses prestations au titre de leur mandat social, sauf s'ils cumulent leur mandat avec un véritable contrat de travail sous certaines conditions.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Faux.",
+                            "rationale": "✅ Les dirigeants assimilés-salariés ne cotisent ni au dialogue social, ni à l'assurance chômage, ni à l'AGS et ne bénéficient pas de réduction de cotisation. C'est une spécificité de leur statut par rapport aux salariés classiques.",
+                            "isCorrect": true
+                        }
+                    ],
+                    "interactiveHint": { "text": "Attention au piège du chômage pour les assimilés-salariés ! 😬" }
+                },
+                {
+                    "question": "Quelle est la principale caractéristique qui distingue un salarié d'un indépendant, selon la législation française ?",
+                    "hint": "Il s'agit d'un lien juridique fondamental.",
+                    "preChoiceHint": "C'est la différence fondamentale qui change tout ! ⚖️",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Le montant de la rémunération.",
+                            "rationale": "❌ Le montant de la rémunération peut varier pour les deux statuts et n'est pas le critère principal de distinction légale.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Le fait de travailler pour une entreprise.",
+                            "rationale": "❌ Un indépendant peut travailler pour une entreprise (son client) sans être salarié. Ce n'est pas le critère distinctif.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ L'existence d'un lien de subordination.",
+                            "rationale": "✅ Le lien de subordination est la caractéristique essentielle qui distingue le statut de salarié du statut d'indépendant. Il implique que le salarié exécute un travail sous l'autorité d'un employeur qui a le pouvoir de donner des ordres, d'en contrôler l'exécution et de sanctionner les manquements.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Le type de diplôme obtenu.",
+                            "rationale": "❌ Le diplôme n'est pas un critère légal de distinction entre salarié et indépendant. Il peut influencer la qualification ou le poste, mais pas le statut juridique de base.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Vrai ou Faux : Une entreprise peut être considérée comme utilisant de la main d'œuvre dissimulée si elle ne vérifie pas l'immatriculation légale de son prestataire indépendant.",
+                    "hint": "Pensez aux risques de non-conformité pour l'entreprise.",
+                    "preChoiceHint": "Mieux vaut prévenir que guérir... surtout avec l'URSSAF ! 🚨",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Vrai.",
+                            "rationale": "✅ Une entreprise peut être considérée comme utilisant de la main d'œuvre dissimulée dans le cas où elle connaissait ou ne pouvait pas ignorer le défaut d'immatriculation légale de son prestataire. L'URSSAF peut alors exiger le paiement de cotisations salariales et patronales ainsi que des pénalités.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Faux.",
+                            "rationale": "❌ C'est incorrect. Le document met en garde contre ce risque et suggère d'être prudent en cas de doute sur le statut d'un prestataire, même si la vérification n'est pas un rôle direct de l'entreprise.",
+                            "isCorrect": false
+                        }
+                    ],
+                    "interactiveHint": { "text": "Un prestataire indépendant, c'est comme un iceberg : la partie cachée peut être risquée ! 🧊" }
+                },
+                {
+                    "question": "Quels sont les deux critères déterminants sur lesquels la jurisprudence s'appuie pour déterminer si un salarié est considéré comme un cadre ?",
+                    "hint": "Ces critères vont au-delà du simple titre de poste.",
+                    "preChoiceHint": "Le titre ne fait pas toujours le moine... ni le cadre ! 🎓",
+                    "answerOptions": [
+                        {
+                            "text": "✨ L'âge et l'ancienneté dans l'entreprise.",
+                            "rationale": "❌ L'âge et l'ancienneté ne sont pas les critères déterminants pour la qualification de cadre selon la jurisprudence. Ces éléments peuvent influencer d'autres droits, mais pas le statut de cadre en soi.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Le critère des connaissances professionnelles et le critère des fonctions réellement exercées.",
+                            "rationale": "✅ La jurisprudence s'appuie sur deux critères déterminants : le critère des connaissances professionnelles (diplôme ou expérience particulière) et le critère des fonctions réellement exercées (degré d'initiative, d'autonomie, de responsabilité et pouvoir de commandement).",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ Le nombre d'heures travaillées par semaine et le type de contrat de travail.",
+                            "rationale": "❌ Le nombre d'heures et le type de contrat définissent le temps de travail et le cadre juridique de l'emploi, mais pas le statut de cadre.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ La participation aux réunions du Comité Social et Économique (CSE) et le niveau de salaire de base.",
+                            "rationale": "❌ La participation au CSE n'est pas un critère de statut cadre. Le niveau de salaire peut être pris en considération, mais il n'est pas un critère déterminant à lui seul.",
+                            "isCorrect": false
+                        }
+                    ]
+                },
+                {
+                    "question": "Vrai ou Faux : Tous les cadres bénéficient automatiquement d'une convention de forfait annuel en jours.",
+                    "hint": "Le Code du travail prévoit des options pour l'organisation du temps de travail des cadres.",
+                    "preChoiceHint": "Forfait jour ou 35h, même les cadres ont le choix (ou presque) ! ⚖️",
+                    "answerOptions": [
+                        {
+                            "text": "✨ Vrai.",
+                            "rationale": "❌ C'est incorrect. Le document précise que 'Tous les cadres ne sont pas automatiquement au forfait heures ou au forfait jours. La durée de travail des cadres peut également être mensualisée. Ils peuvent donc être amenés à travailler 35 h par semaine.'",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ Faux.",
+                            "rationale": "✅ Le Code du travail prévoit la possibilité d'organi la rémunération des cadres sous convention de forfait annuel en heures ou en jours, mais ce n'est pas automatique. Leur durée de travail peut également être mensualisée (35 heures par semaine).",
+                            "isCorrect": true
+                        }
+                    ],
+                    "interactiveHint": { "text": "Un cadre au forfait, c'est comme un super-héros : il gère son temps, mais pas n'importe comment ! 🦸‍♀️" }
+                },
+                {
+                    "question": "Quelle est l'obligation spécifique imposée aux entreprises employant des cadres ou assimilés cadres concernant la prévoyance, selon la Convention Collective Nationale de retraite et de prévoyance des cadres du 14 mars 1947 ?",
+                    "hint": "Il s'agit d'une cotisation obligatoire avec une part employeur spécifique.",
+                    "preChoiceHint": "Un article de loi peut cacher une obligation importante... et coûteuse ! 💰",
+                    "answerOptions": [
+                        {
+                            "text": "✨ De souscrire une mutuelle obligatoire pour tous les cadres.",
+                            "rationale": "❌ La mutuelle est obligatoire pour tous les salariés depuis 2016 (ANI), mais l'obligation spécifique de l'article 7 de la CCN des cadres concerne une garantie décès et une cotisation patronale minimale.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ De verser une cotisation obligatoire de 1,50% de la tranche 1 du salaire, intégralement prise en charge par l'employeur, pour une garantie décès.",
+                            "rationale": "✅ L'article 7 de la Convention Collective Nationale de retraite et de prévoyance des cadres du 14 mars 1947 impose aux entreprises de verser une cotisation obligatoire, fixée à 1,50% de la tranche 1 du salaire (dans la limite du plafond de la Sécurité sociale), et qui doit être intégralement prise en charge par l'employeur, pour une garantie décès.",
+                            "isCorrect": true
+                        },
+                        {
+                            "text": "✨ De proposer un régime de prévoyance facultatif à tous les cadres.",
+                            "rationale": "❌ Il s'agit d'une cotisation obligatoire, non facultative, imposée par cette convention collective spécifique.",
+                            "isCorrect": false
+                        },
+                        {
+                            "text": "✨ De financer la totalité des cotisations de retraite complémentaire des cadres.",
+                            "rationale": "❌ La cotisation de 1,50% concerne spécifiquement une garantie décès et non la totalité des cotisations de retraite complémentaire, qui sont partagées entre employeur et salarié.",
+                            "isCorrect": false
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Données du glossaire (extraites du PDF fourni)
+        const glossaryData = [
+            {
+                term: "Abattement SMIC mineur",
+                definition: "Pour un salarié mineur de moins de 18 ans et sans 6 mois de pratique professionnelle, un abattement sur le SMIC peut être appliqué : 20% en deçà de 17 ans, et 10% entre 17 et 18 ans."
+            },
+            {
+                term: "AGS (Association de Garantie des Salariés)",
+                definition: "Organisme qui garantit le paiement des salaires et autres créances des salariés en cas d'insolvabilité de l'employeur (redressement ou liquidation judiciaire)."
+            },
+            {
+                term: "Assimilés-salariés",
+                definition: "Catégorie de dirigeants qui bénéficient de la même protection sociale que les salariés, à l'exception de l'assurance chômage."
+            },
+            {
+                term: "Avantage en nature logement",
+                definition: "Un logement mis à disposition par l'employeur. Pour les dirigeants sociaux, l'évaluation de cet avantage se fait à sa valeur réelle, l'évaluation forfaitaire étant exclue."
+            },
+            {
+                term: "Barème forfaitaire repas",
+                definition: "Montant fixé par l'administration pour évaluer l'avantage en nature repas. Pour l'année 2025, il est fixé à 5,45 € par repas."
+            },
+            {
+                term: "Clause de variation de rémunération",
+                definition: "Une clause du contrat de travail peut prévoir une variation de la rémunération si elle est fondée sur des éléments objectifs indépendants de la volonté de l'employeur, ne fait pas porter le risque d'entreprise sur le salarié et ne réduit pas la rémunération sous les minima légaux ou conventionnels."
+            },
+            {
+                term: "Coffre-fort numérique",
+                definition: "Espace sécurisé en ligne dédié au stockage de documents électroniques sensibles."
+            },
+            {
+                term: "Conservation bulletin de paie électronique",
+                definition: "L'employeur doit garantir la conservation et la disponibilité du bulletin de paie électronique pendant une durée de cinquante ans, soit jusqu'à ce que le salarié ait atteint l'âge de soixante-quinze ans."
+            },
+            {
+                term: "Cotisations sociales",
+                definition: "Divisées en deux grandes catégories : les cotisations salariales (payées par les salariés) et les cotisations patronales (payées par les employeurs)."
+            },
+            {
+                term: "Cotisations sociales salariales",
+                definition: "Montant payé par le salarié pour les assurances sociales, prélevé sur le salaire brut."
+            },
+            {
+                term: "Déclaration Sociale Nominative (DSN)",
+                definition: "Outil indispensable pour les déclarations sociales et le télépaiement des cotisations."
+            },
+            {
+                term: "Dématérialisation bulletin de salaire",
+                definition: "Depuis le 1er janvier 2017, l'accord préalable du salarié n'est plus nécessaire pour la dématérialisation du bulletin de salaire. Le salarié doit cependant être informé de son droit de s'y opposer."
+            },
+            {
+                term: "Direction des Ressources Humaines",
+                definition: "Service chargé de la gestion des carrières, des formations et de l'hygiène et sécurité au sein de l'entreprise."
+            },
+            {
+                term: "Éléments exclus du calcul SMIC",
+                definition: "Certains éléments de rémunération ne sont pas pris en compte pour la comparaison avec le SMIC, car ils ne sont pas la contrepartie directe du travail habituel. Exemples : primes d'ancienneté, remboursements de frais."
+            },
+            {
+                term: "Externalisation de la gestion de la paie",
+                definition: "Consiste à transférer cette gestion à un prestataire externe, et ainsi à s'affranchir de ses contraintes et responsabilités."
+            },
+            {
+                term: "Interdiction indexation salaires",
+                definition: "L'interdiction légale d'indexer les salaires sur des indices généraux (comme le SMIC ou le niveau général des prix) vise à éviter une inflation incontrôlable due à des augmentations automatiques (boucle prix-salaires)."
+            },
+            {
+                term: "Lien de subordination",
+                definition: "Caractéristique essentielle qui distingue le statut de salarié du statut d'indépendant."
+            },
+            {
+                term: "Licenciement faute lourde et congés payés",
+                definition: "Depuis le 4 mars 2016, suite à une décision du Conseil constitutionnel, le licenciement pour faute lourde ne prive plus le salarié de son indemnité compensatrice de congés payés."
+            },
+            {
+                term: "Mentions interdites bulletin de paie",
+                definition: "Aucune mention relative à l'activité de représentation des salariés (mandats syndicaux, etc.) ne doit figurer sur le bulletin de paie. Ces informations doivent être sur une fiche annexe."
+            },
+            {
+                term: "Paiement du salaire (modalités)",
+                definition: "Le paiement du salaire peut se faire en espèces pour les montants inférieurs à 1 500 €. Au-delà de ce seuil, le paiement doit se faire par chèque ou virement bancaire ou postal."
+            },
+            {
+                term: "Personne à charge (saisie sur salaire)",
+                definition: "La présence de personnes à charge augmente les seuils d'insaisissabilité du salaire. Pour 2025, les seuils sont augmentés de 1 720 € pour chaque personne à charge du débiteur saisi."
+            },
+            {
+                term: "Pôle social (cabinet comptable)",
+                definition: "Les cabinets comptables ayant un pôle social traitent entre 200 et 7 500 paies par mois."
+            },
+            {
+                term: "Primes annuelles et SMIC",
+                definition: "Les primes payées en cours d'année en contrepartie ou à l'occasion du travail sont prises en compte pour la détermination du salaire minimum pour le mois où elles ont été effectivement versées. Elles ne sont pas réparties sur l'ensemble de l'année, sauf si une convention collective le prévoit par acomptes mensuels."
+            },
+            {
+                term: "Prescription paiement salaire",
+                definition: "Depuis le 17 juin 2013, les actions en paiement de salaire exercées par les salariés se prescrivent par trois ans."
+            },
+            {
+                term: "Preuve du paiement du salaire",
+                definition: "La délivrance du bulletin de paie par l'employeur ne constitue pas une preuve du paiement effectif du salaire. C'est à l'employeur de prouver le paiement par d'autres moyens (reçu, virement, etc.)."
+            },
+            {
+                term: "Prime annuelle sur objectif (départ salarié)",
+                definition: "Lorsqu'une prime constitue la partie variable de la rémunération versée en contrepartie de l'activité du salarié, elle s'acquiert au prorata de son temps de présence dans l'entreprise, même si le salarié quitte l'entreprise avant la date de versement habituelle."
+            },
+            {
+                term: "Rémunération juridique",
+                definition: "Sur le plan juridique, la rémunération est la contrepartie du travail fourni par le salarié. C'est la principale obligation de l'employeur dans le contrat de travail synallagmatique."
+            },
+            {
+                term: "Retard paiement salaire et rupture contrat",
+                definition: "Un retard de paiement du salaire de plus de deux mois peut justifier la prise d'acte de la rupture du contrat de travail aux torts de l'employeur, produisant les effets d'un licenciement sans cause réelle et sérieuse."
+            },
+            {
+                term: "Salaire au temps",
+                definition: "Le salaire au temps est uniquement fonction du nombre d'heures de travail accomplies par le salarié. La mensualisation permet d'être payé selon un forfait mensuel indépendant du nombre d'heures effectivement effectuées dans le mois."
+            },
+            {
+                term: "Salaire de base",
+                definition: "Montant de rémunération fixe mentionnée dans le contrat de travail."
+            },
+            {
+                term: "Salaire brut",
+                definition: "Composé de variables. Ces dernières incluent le salaire de base mentionné dans le contrat de travail, les heures supplémentaires ou complémentaires (pour un temps partiel), les primes, les congés payés, ou encore les arrêts maladie."
+            },
+            {
+                term: "Salaire net",
+                definition: "S'obtient en partant du salaire brut et en déduisant les cotisations sociales."
+            },
+            {
+                term: "Salaire net à payer",
+                definition: "Correspond à la somme réellement versée au salarié, après déduction des cotisations sociales salariales et du prélèvement à la source de l'impôt sur le revenu."
+            },
+            {
+                term: "Salaire net à payer avant impôt sur le revenu",
+                definition: "Montant du salaire brut, après déduction des cotisations sociales salariales et ajout de divers éléments tels que l'indemnité de transport ou les IJSS nettes."
+            },
+            {
+                term: "Salaire net imposable",
+                definition: "Montant utilisé pour calculer l'impôt sur le revenu. Il s'obtient en ajoutant au salaire net à payer avant impôt certains éléments imposables tels que la part des contributions CSG/CRDS imposable et la participation patronale à la mutuelle."
+            },
+            {
+                term: "Salarié",
+                definition: "Détient un contrat de travail établissant la réalisation d'une tâche spécifique, pour un montant donné et impliquant un lien de subordination."
+            },
+            {
+                term: "Saisie sur salaire",
+                definition: "Procédure permettant à un créancier de récupérer des sommes dues directement sur le salaire du débiteur. La fraction saisissable est progressive et dépend du montant du salaire annuel."
+            },
+            {
+                term: "Service Paie",
+                definition: "Service chargé principalement de la production des bulletins de paie et des déclarations sociales obligatoires."
+            },
+            {
+                term: "Statut cadre",
+                definition: "Catégorie de salariés avec des responsabilités importantes, bénéficiant de dispositions spécifiques."
+            }
+        ];
+
+
+        let currentQuestionIndex = 0; // Suit la question actuellement affichée
+        let score = 0; // Stocke le score de l'utilisateur
+        // Stocke l'index d'origine de la réponse sélectionnée par l'utilisateur pour chaque question
+        let userAnswers = new Array(quizData.questions.length).fill(null);
+        // Suit si une question a été répondue correctement à la première tentative
+        let answeredCorrectly = new Array(quizData.questions.length).fill(false);
+        // Suit si le bonus pour la première tentative a déjà été appliqué pour une question
+        let firstAttemptBonusApplied = new Array(quizData.questions.length).fill(false);
+        const BONUS_POINTS = 10; // Points à attribuer pour une bonne réponse à la première tentative
+        
+        // Calcul de la durée du quiz en fonction du nombre de questions (45 secondes par question)
+        const QUIZ_DURATION_SECONDS_PER_QUESTION = 45;
+        let QUIZ_DURATION_SECONDS; // Sera défini en fonction du nombre de questions sélectionné
+        
+        let timerInterval;
+        let timeLeft;
+
+        let gameMode = 'normal'; // 'normal' ou 'survival'
+        let lives = 3; // Pour le mode survie
+        let soundEnabled = true; // État pour l'activation/désactivation du son
+
+        // Contextes audio pour les effets sonores
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playCorrectSound() {
+            if (!soundEnabled) return;
+            // Son simple d'onde sinusoïdale pour une bonne réponse
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(880, audioContext.currentTime); // La5
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function playIncorrectSound() {
+            if (!soundEnabled) return;
+            // Son simple d'onde en dents de scie pour une mauvaise réponse
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.type = 'sawtooth';
+            oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // La3
+            gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.start();
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+
+        // Obtenir les références aux éléments du DOM
+        const quizContainer = document.querySelector('.quiz-container');
+        let startScreen;
+        let quizScreen;
+        let resultsScreen;
+        let reviewModeScreen;
+        let glossaryScreen;
+        let certificateScreen; // Référence à l'écran du certificat
+
+        let startButton;
+        let continueButton;
+        let prevButton;
+        let nextButton;
+        let restartButton;
+        let reviewButton;
+        let backToResultsButton;
+        let progressBar;
+        let liveScoreDisplay;
+        let correctProgressElement;
+        let incorrectProgressElement;
+        let unansweredProgressElement;
+        let timerDisplay;
+        let themeSwitcher;
+        let soundToggle;
+        let copyrightTextElement;
+        let glossaryButtonStart;
+        let glossaryButtonResults;
+        let backToStartFromGlossary;
+        let gameModeSelect;
+        let numQuestionsSelect;
+        let livesDisplay;
+        let certificateButton; // Bouton du certificat
+        let userNameInput;
+        let printCertificateButton;
+        let backToResultsFromCertificate;
+        let certificateScoreElement;
+        let certificateDateElement;
+
+
+        // Fonction pour assigner les éléments du DOM après DOMContentLoaded
+        function assignDOMElements() {
+            startScreen = document.getElementById('startScreen');
+            quizScreen = document.getElementById('quizScreen');
+            resultsScreen = document.getElementById('resultsScreen');
+            reviewModeScreen = document.getElementById('reviewModeScreen');
+            glossaryScreen = document.getElementById('glossaryScreen');
+            certificateScreen = document.getElementById('certificateScreen');
+
+            startButton = document.getElementById('startButton');
+            continueButton = document.getElementById('continueButton');
+            prevButton = document.getElementById('prevButton');
+            nextButton = document.getElementById('nextButton');
+            restartButton = document.getElementById('restartButton');
+            reviewButton = document.getElementById('reviewButton');
+            backToResultsButton = document.getElementById('backToResultsButton');
+            progressBar = document.getElementById('progressBar');
+            liveScoreDisplay = document.getElementById('liveScoreDisplay');
+            correctProgressElement = document.getElementById('correctProgress');
+            incorrectProgressElement = document.getElementById('incorrectProgress');
+            unansweredProgressElement = document.getElementById('unansweredProgress');
+            timerDisplay = document.getElementById('timerDisplay');
+            themeSwitcher = document.getElementById('themeSwitcher');
+            soundToggle = document.getElementById('soundToggle');
+            copyrightTextElement = document.getElementById('copyrightText');
+            glossaryButtonStart = document.getElementById('glossaryButtonStart');
+            glossaryButtonResults = document.getElementById('glossaryButtonResults');
+            backToStartFromGlossary = document.getElementById('backToStartFromGlossary');
+            gameModeSelect = document.getElementById('gameModeSelect');
+            numQuestionsSelect = document.getElementById('numQuestionsSelect');
+            livesDisplay = document.getElementById('livesDisplay');
+            certificateButton = document.getElementById('certificateButton');
+            userNameInput = document.getElementById('userNameInput');
+            printCertificateButton = document.getElementById('printCertificateButton');
+            backToResultsFromCertificate = document.getElementById('backToResultsFromCertificate');
+            certificateScoreElement = document.getElementById('certificateScore');
+            certificateDateElement = document.getElementById('certificateDate');
+        }
+
+
+        // --- Gestion du thème ---
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+            // Assure que tous les éléments dynamiques mettent à jour leur classe de thème
+            const allElements = document.querySelectorAll('h1, h2, p, .answer-option, .rationale, .button, .progress-bar, .live-score-display, .hint-text, .pre-choice-hint, .interactive-hint-display, .footer-links, .review-question-card, .glossary-term, #timerDisplay, .game-mode-selection label, .game-mode-selection select, .lives-display, .stats-text-color'); // Ajout de .stats-text-color
+            allElements.forEach(element => {
+                if (theme === 'dark') {
+                    element.classList.add('dark-mode');
+                } else {
+                    element.classList.remove('dark-mode');
+                }
+            });
+
+            // Ajustements spécifiques des couleurs de texte pour le mode sombre
+            const elementsToLighten = document.querySelectorAll(
+                'h1, #startScreen p, #timerDisplay, #liveScoreDisplay, #reviewModeScreen h2, .footer-links p, .footer-links a, #copyrightText, .glossary-term h3, .glossary-term p, .game-mode-selection label, .game-mode-selection select, .lives-display, #certificateScreen h2, #certificateScreen p, #certificateScreen .signature, #certificateScreen input[type="text"], #certificateScreen .club-logo-text, #resultsScreen .score-display, #resultsScreen p, .stats-text-color' // Ajout de .stats-text-color
+            );
+            elementsToLighten.forEach(element => {
+                if (theme === 'dark') {
+                    element.classList.remove('text-gray-800', 'text-gray-700', 'text-gray-600', 'text-gray-500', 'text-blue-700', 'text-red-500');
+                    element.classList.add('text-gray-100');
+                    if (element.classList.contains('lives-display')) {
+                        element.classList.add('text-red-300'); // Rouge plus clair pour les vies en mode sombre
+                    }
+                    if (element.classList.contains('text-blue-700')) { // Pour le nom du club sur l'écran de démarrage ou le score du certificat
+                        element.classList.add('text-blue-300');
+                    }
+                    if (element.classList.contains('glossary-term') && element.tagName === 'P') { // Spécifique pour le texte du paragraphe du glossaire
+                        element.classList.add('text-gray-200');
+                    }
+                    if (element.classList.contains('stats-text-color')) { // Spécifique pour le texte des statistiques
+                        element.classList.add('text-fuchsia-300'); // Rose plus clair pour les stats en mode sombre
+                    }
+                } else {
+                    element.classList.remove('text-gray-100', 'text-red-300', 'text-blue-300', 'text-fuchsia-300'); // Suppression des classes spécifiques au mode sombre
+                    // Réapplique les classes originales du mode clair si nécessaire, ou définit une couleur foncée par défaut
+                    if (element.id === 'startScreen') {
+                         element.classList.add('text-gray-700');
+                    } else if (element.id === 'timerDisplay' || element.id === 'liveScoreDisplay') {
+                        element.classList.add('text-gray-700');
+                    } else if (element.tagName === 'H1' || element.tagName === 'H2') {
+                        element.classList.add('text-gray-800');
+                    } else if (element.classList.contains('footer-links')) {
+                        element.classList.add('text-gray-700');
+                    } else if (element.id === 'copyrightText') {
+                        element.classList.add('text-gray-500');
+                    } else if (element.classList.contains('glossary-term') && element.tagName === 'P') {
+                        element.classList.add('text-gray-700'); // Foncé par défaut pour le texte du paragraphe du glossaire
+                    } else if (element.classList.contains('glossary-term') && element.tagName === 'H3') {
+                        element.classList.add('text-blue-700'); // Bleu par défaut pour le titre du glossaire
+                    } else if (element.classList.contains('game-mode-selection')) {
+                        element.classList.add('text-gray-700');
+                    } else if (element.classList.contains('lives-display')) {
+                        element.classList.add('text-red-500'); // Rouge par défaut pour les vies
+                    } else if (element.parentElement && element.parentElement.id === 'certificateScreen') {
+                        // Spécifique pour le texte de l'écran du certificat
+                        if (element.tagName === 'P' || element.tagName === 'INPUT') {
+                            element.classList.add('text-gray-700');
+                        } else if (element.classList.contains('signature')) {
+                            element.classList.add('text-gray-800');
+                        } else if (element.classList.contains('club-logo-text')) {
+                            element.classList.add('text-blue-700');
+                        }
+                    } else if (element.parentElement && element.parentElement.id === 'resultsScreen') {
+                        // Spécifique pour le texte de l'écran des résultats
+                        if (element.classList.contains('score-display') || element.tagName === 'P') {
+                            element.classList.add('text-gray-800'); // Assure un texte foncé en mode clair
+                        }
+                    } else if (element.classList.contains('stats-text-color')) { // Spécifique pour le texte des statistiques
+                        element.classList.add('text-pink-700'); // Rose foncé pour les stats en mode clair
+                    }
+                }
+            });
+
+            // Ajustement spécifique pour le texte des boutons sociaux et le remplissage SVG
+            const socialButtons = document.querySelectorAll('.discord-button, .whatsapp-button');
+            socialButtons.forEach(button => {
+                const svg = button.querySelector('svg');
+                if (theme === 'dark') {
+                    button.style.color = 'white'; // Force le texte blanc pour ces boutons en mode sombre
+                    if (svg) svg.style.fill = 'white'; // Force le remplissage blanc pour l'icône SVG
+                } else {
+                    button.style.color = ''; // Réinitialise à la valeur par défaut (qui est blanc pour ces boutons en mode clair)
+                    if (svg) svg.style.fill = 'currentColor'; // Réinitialise à currentColor (hérite du texte)
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+        }
+
+
+        // --- Stockage local de la progression ---
+        function saveProgress() {
+            const progress = {
+                currentQuestionIndex,
+                score,
+                userAnswers,
+                answeredCorrectly,
+                firstAttemptBonusApplied,
+                timeLeft,
+                gameMode,
+                lives,
+                quizStarted: true, // Indique qu'un quiz a été démarré
+                currentQuizQuestions: quizData.currentQuizQuestions // Sauvegarde le sous-ensemble de questions utilisé
+            };
+            localStorage.setItem('quizProgress', JSON.stringify(progress));
+
+            // Sauvegarde les statistiques historiques
+            let stats = JSON.parse(localStorage.getItem('quizStats')) || {
+                bestScore: 0,
+                totalAttempts: 0,
+                totalCorrectAnswersOverall: 0,
+                totalQuestionsAnsweredOverall: 0
+            };
+            localStorage.setItem('quizStats', JSON.stringify(stats)); // Assure que les stats sont initialisées si non présentes
+        }
+
+        function loadProgress() {
+            const savedProgress = localStorage.getItem('quizProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                currentQuestionIndex = progress.currentQuestionIndex;
+                score = progress.score;
+                userAnswers = progress.userAnswers;
+                answeredCorrectly = progress.answeredCorrectly;
+                firstAttemptBonusApplied = progress.firstAttemptBonusApplied;
+                timeLeft = progress.timeLeft;
+                gameMode = progress.gameMode || 'normal'; // Définit le mode normal par défaut si non sauvegardé
+                lives = progress.lives !== undefined ? progress.lives : 3; // Définit 3 vies par défaut
+                quizData.currentQuizQuestions = progress.currentQuizQuestions; // Charge le sous-ensemble de questions
+                return progress.quizStarted;
+            }
+            return false;
+        }
+
+        function clearProgress() {
+            localStorage.removeItem('quizProgress');
+        }
+
+        // --- Fonctions du minuteur ---
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimerDisplay() {
+            if (timerDisplay) { // Vérifie si timerDisplay existe avant de le mettre à jour
+                timerDisplay.textContent = `Temps restant : ${formatTime(timeLeft)}`;
+            }
+            if (livesDisplay) { // Vérifie si livesDisplay existe avant de le mettre à jour
+                if (gameMode === 'survival') {
+                    livesDisplay.textContent = `Vies restantes : ${lives} ❤️`;
+                    livesDisplay.classList.remove('hidden');
+                    if (timerDisplay) timerDisplay.classList.add('hidden'); // Cache le minuteur en mode survie
+                } else {
+                    livesDisplay.classList.add('hidden');
+                    if (timerDisplay) timerDisplay.classList.remove('hidden'); // Affiche le minuteur en mode normal
+                }
+            }
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval); // Efface tout minuteur existant
+            if (gameMode === 'normal') {
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        showResults(true); // Indique que le quiz s'est terminé par le temps
+                    }
+                }, 1000);
+            }
+            // Pas de minuteur pour le mode survie, les vies dictent la progression
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        // --- Gestion du flux du quiz ---
+        function showScreen(screenId) {
+            // Assure que tous les éléments d'écran sont assignés avant d'essayer de les cacher
+            // Ceci est crucial pour prévenir les erreurs "Cannot read properties of null"
+            const screens = [
+                document.getElementById('startScreen'),
+                document.getElementById('quizScreen'),
+                document.getElementById('resultsScreen'),
+                document.getElementById('reviewModeScreen'),
+                document.getElementById('glossaryScreen'),
+                document.getElementById('certificateScreen')
+            ];
+            screens.forEach(screen => {
+                if (screen) { // Vérifie si l'élément existe
+                    screen.classList.add('hidden');
+                }
+            });
+
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.remove('hidden');
+            }
+            
+            // Réapplique le thème aux éléments nouvellement affichés
+            applyTheme(localStorage.getItem('theme') || 'light');
+        }
+
+        function startQuiz(resume = false) {
+            gameMode = gameModeSelect.value; // Obtient le mode sélectionné dans la liste déroulante
+            let numQuestionsToUse = numQuestionsSelect.value;
+
+            if (!resume) {
+                currentQuestionIndex = 0;
+                score = 0;
+                userAnswers = new Array(quizData.questions.length).fill(null); // Réinitialise toutes les réponses
+                answeredCorrectly = new Array(quizData.questions.length).fill(false);
+                firstAttemptBonusApplied = new Array(quizData.questions.length).fill(false);
+                lives = 3; // Réinitialise les vies pour un nouveau quiz de survie
+                clearProgress(); // Efface la progression précédente si on démarre à zéro
+
+                // Mélange les questions et sélectionne un sous-ensemble si ce n'est pas "all"
+                let shuffledQuizQuestions = [...quizData.questions];
+                for (let i = shuffledQuizQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledQuizQuestions[i], shuffledQuizQuestions[j]] = [shuffledQuizQuestions[j], shuffledQuizQuestions[i]];
+                }
+
+                if (numQuestionsToUse !== 'all') {
+                    numQuestionsToUse = parseInt(numQuestionsToUse, 10); // Convertir en entier
+                    quizData.currentQuizQuestions = shuffledQuizQuestions.slice(0, numQuestionsToUse);
+                } else {
+                    quizData.currentQuizQuestions = shuffledQuizQuestions;
+                }
+                
+                // Recalcule la durée en fonction des questions réelles pour cette instance de quiz
+                QUIZ_DURATION_SECONDS = quizData.currentQuizQuestions.length * QUIZ_DURATION_SECONDS_PER_QUESTION;
+                timeLeft = QUIZ_DURATION_SECONDS;
+
+            } else {
+                // Si on reprend, quizData.currentQuizQuestions devrait déjà être défini si c'était un quiz de longueur personnalisée
+                // Si c'est un quiz complet, quizData.currentQuizQuestions sera indéfini, donc on utilise quizData.questions
+                if (!quizData.currentQuizQuestions) {
+                    quizData.currentQuizQuestions = quizData.questions;
+                }
+                // Le minuteur 'timeLeft' et les 'lives' sont déjà chargés à partir de la progression sauvegardée
+            }
+            showScreen('quizScreen');
+            startTimer();
+            displayQuestion();
+        }
+
+        // Fonction pour mélanger un tableau (algorithme de Fisher-Yates)
+        // Modifié pour préserver l'index d'origine de chaque option
+        function shuffleArray(array) {
+            // Crée une copie du tableau avec l'index d'origine
+            let indexedArray = array.map((item, index) => ({ item, originalIndex: index }));
+            for (let i = indexedArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indexedArray[i], indexedArray[j]] = [indexedArray[j], indexedArray[i]]; 
+            }
+            return indexedArray;
+        }
+
+        // Fonction pour afficher la question actuelle et ses options
+        function displayQuestion() {
+            const questionsSource = quizData.currentQuizQuestions || quizData.questions; // Utilise currentQuizQuestions si défini, sinon toutes les questions
+            const questionData = questionsSource[currentQuestionIndex];
+            // Mélange les options en conservant leur index d'origine
+            const shuffledOptionsWithOriginalIndex = shuffleArray([...questionData.answerOptions]);
+
+            const quizDiv = document.getElementById('quiz');
+            quizDiv.innerHTML = `
+                <div class="question-text">${currentQuestionIndex + 1}. ${questionData.question}</div>
+                ${questionData.preChoiceHint ? `<div id="preChoiceHint" class="pre-choice-hint">${questionData.preChoiceHint}</div>` : ''}
+                <div id="answerOptions" class="flex flex-col gap-3">
+                    ${shuffledOptionsWithOriginalIndex.map(optionWrapper => `
+                        <div class="answer-option rounded-xl p-4 cursor-pointer transition-all duration-200 ease-in-out hover:bg-blue-100 hover:shadow-md"
+                             data-original-index="${optionWrapper.originalIndex}"
+                             onclick="selectAnswer(this, ${optionWrapper.originalIndex})">
+                            ${optionWrapper.item.text}
+                        </div>
+                    `).join('')}
+                </div>
+                <div id="hint" class="hint-text hidden mt-4">Indice : ${questionData.hint}</div>
+                <div id="rationaleContainer" class="mt-4 hidden"></div>
+                <div id="bonusMessage" class="bonus-message hidden"></div> <!-- Nouveau div pour le message de bonus -->
+                <div id="interactiveHintDisplay" class="interactive-hint-display hidden mt-4"></div> <!-- Nouveau div pour l'indice interactif -->
+            `;
+
+            // Si l'utilisateur a déjà répondu à cette question, restaurer sa sélection et afficher la justification
+            if (userAnswers[currentQuestionIndex] !== null) {
+                const selectedOptionElement = quizDiv.querySelector(`[data-original-index="${userAnswers[currentQuestionIndex]}"]`);
+                if (selectedOptionElement) {
+                    // Appliquer la logique de showRationale pour restaurer les couleurs et justifications
+                    showRationale(selectedOptionElement, userAnswers[currentQuestionIndex], false); // Ne pas recalculer le bonus si déjà répondu
+                }
+            } else {
+                // S'assurer que les messages de bonus et d'indice interactif sont cachés pour une nouvelle question
+                document.getElementById('bonusMessage').classList.add('hidden');
+                document.getElementById('interactiveHintDisplay').classList.add('hidden');
+            }
+
+            updateNavigationButtons();
+            updateProgressBar();
+            updateLiveScoreDisplay();
+            saveProgress(); // Sauvegarde la progression après l'affichage de la question
+        }
+
+        // Fonction pour gérer la sélection d'une réponse par l'utilisateur
+        function selectAnswer(selectedElement, originalSelectedIndex) {
+            // Si la question a déjà été répondu, empêcher une nouvelle sélection
+            if (userAnswers[currentQuestionIndex] !== null) {
+                return;
+            }
+
+            // Stocker l'index D'ORIGINE de la réponse sélectionnée
+            userAnswers[currentQuestionIndex] = originalSelectedIndex;
+
+            // Cacher l'indice avant le choix une fois qu'une réponse est sélectionnée
+            const preChoiceHintElement = document.getElementById('preChoiceHint');
+            if (preChoiceHintElement) {
+                preChoiceHintElement.classList.add('hidden');
+            }
+
+            // Appliquer la logique de showRationale pour afficher les couleurs et justifications
+            showRationale(selectedElement, originalSelectedIndex, true); // Indiquer que c'est une nouvelle tentative pour le bonus
+            saveProgress(); // Sauvegarde la progression après la sélection de la réponse
+        }
+
+        // Fonction pour afficher la justification pour toutes les options et mettre à jour le score
+        function showRationale(selectedElement, originalSelectedIndex, isNewAttempt) {
+            const questionsSource = quizData.currentQuizQuestions || quizData.questions;
+            const questionData = questionsSource[currentQuestionIndex];
+            const allOptionsElements = document.getElementById('quiz').querySelectorAll('.answer-option');
+            const rationaleContainer = document.getElementById('rationaleContainer');
+            const bonusMessageElement = document.getElementById('bonusMessage'); // Référence au nouveau div
+            const interactiveHintDisplay = document.getElementById('interactiveHintDisplay'); // Référence au nouveau div pour l'indice interactif
+
+            rationaleContainer.innerHTML = '';
+            bonusMessageElement.classList.add('hidden'); // Cacher le message de bonus par défaut
+            interactiveHintDisplay.classList.add('hidden'); // Cacher l'indice interactif par défaut
+
+            let isCurrentAnswerCorrect = false; // Pour savoir si la réponse sélectionnée est correcte
+
+            allOptionsElements.forEach(optionElement => {
+                const optionOriginalIndex = parseInt(optionElement.dataset.originalIndex);
+                const optionData = questionData.answerOptions[optionOriginalIndex];
+                const isCorrectOption = optionData.isCorrect;
+                const rationaleText = optionData.rationale;
+
+                // Nettoyer toutes les classes de couleur avant d'appliquer les nouvelles
+                optionElement.classList.remove('selected', 'correct', 'incorrect');
+
+                // Créer un div pour la justification de chaque option
+                const rationaleDiv = document.createElement('div');
+                rationaleDiv.classList.add('rationale', 'rounded-lg', 'p-3', 'mb-2');
+                rationaleDiv.innerHTML = `<strong>${optionElement.innerText}:</strong> ${rationaleText}`;
+
+                // Logique de couleur pour les options de réponse (l'élément cliqué et les autres)
+                if (optionOriginalIndex === originalSelectedIndex) {
+                    // C'est l'option sélectionnée par l'utilisateur
+                    optionElement.classList.add('selected'); // Jaune pour l'option sélectionnée
+                    if (isCorrectOption) {
+                        isCurrentAnswerCorrect = true;
+                        // Si la réponse sélectionnée est correcte, sa justification est bleue
+                        rationaleDiv.classList.add('correct-rationale');
+                    } else {
+                        // Si la réponse sélectionnée est incorrecte, sa justification est jaune
+                        rationaleDiv.classList.add('selected-rationale');
+                    }
+                } else if (isCorrectOption) {
+                    // C'est la bonne réponse, mais non sélectionnée par l'utilisateur
+                    optionElement.classList.add('correct'); // Bleu pour la bonne réponse non sélectionnée
+                    rationaleDiv.classList.add('correct-rationale'); // Bleu pour sa justification
+                } else {
+                    // C'est une mauvaise réponse, non sélectionnée par l'utilisateur
+                    optionElement.classList.add('incorrect'); // Fuchsia pour les mauvaises réponses non sélectionnées
+                    rationaleDiv.classList.add('incorrect-rationale'); // Fuchsia pour sa justification
+                }
+
+                rationaleContainer.appendChild(rationaleDiv);
+            });
+
+            // Mettre à jour le score et le statut `answeredCorrectly`
+            if (isNewAttempt) { // Seulement si c'est une nouvelle tentative
+                if (isCurrentAnswerCorrect) {
+                    score++; // Ajoute le point de la question
+                    answeredCorrectly[currentQuestionIndex] = true;
+                    if (!firstAttemptBonusApplied[currentQuestionIndex]) {
+                        score += BONUS_POINTS; // Ajoute les points bonus
+                        firstAttemptBonusApplied[currentQuestionIndex] = true;
+                        bonusMessageElement.textContent = `Bien joué ! +${BONUS_POINTS} points bonus pour votre première tentative ! 🎉`;
+                        bonusMessageElement.classList.add('success');
+                        bonusMessageElement.classList.remove('hidden');
+                    }
+                    playCorrectSound(); // Joue le son pour une bonne réponse
+                } else {
+                    if (gameMode === 'survival') {
+                        lives--;
+                        if (lives <= 0) {
+                            showResults(false, true); // Termine le quiz en raison du manque de vies
+                            return; // Arrête le traitement ultérieur
+                        }
+                    }
+                    bonusMessageElement.textContent = `Pas de points bonus pour cette fois, mais continuez à apprendre ! 💡`;
+                    bonusMessageElement.classList.add('info');
+                    bonusMessageElement.classList.remove('hidden');
+
+                    // Afficher l'indice interactif si disponible et la réponse est incorrecte
+                    const interactiveHint = questionData.interactiveHint;
+                    if (interactiveHint && interactiveHint.text) {
+                        interactiveHintDisplay.textContent = interactiveHint.text;
+                        interactiveHintDisplay.classList.remove('hidden');
+                        interactiveHintDisplay.classList.add('fade-in'); // Ajoute la classe pour l'animation
+                        // Supprime la classe d'animation après un court délai pour permettre de la re-déclencher
+                        setTimeout(() => {
+                            interactiveHintDisplay.classList.remove('fade-in');
+                        }, 500); // Correspond à la durée de l'animation
+                    }
+                    playIncorrectSound(); // Joue le son pour une mauvaise réponse
+                }
+            }
+
+            updateLiveScoreDisplay();
+            updateProgressBar(); // Met à jour la barre de progression après la sélection
+            rationaleContainer.classList.remove('hidden');
+            allOptionsElements.forEach(option => option.style.pointerEvents = 'none'); // Désactive les clics après la sélection
+            nextButton.disabled = false;
+        }
+
+        // Fonction pour mettre à jour l'état des boutons de navigation (Précédent/Suivant)
+        function updateNavigationButtons() {
+            const questionsSource = quizData.currentQuizQuestions || quizData.questions;
+            prevButton.disabled = currentQuestionIndex === 0;
+            // Le bouton Suivant est désactivé si la question actuelle n'a pas encore été répondue
+            nextButton.disabled = userAnswers[currentQuestionIndex] === null;
+            nextButton.textContent = currentQuestionIndex === questionsSource.length - 1 ? 'Voir les résultats' : 'Suivant';
+        }
+
+        // Fonction pour mettre à jour la barre de progression colorée
+        function updateProgressBar() {
+            const questionsSource = quizData.currentQuizQuestions || quizData.questions;
+            const totalQuestions = questionsSource.length;
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+
+            for (let i = 0; i < totalQuestions; i++) {
+                // Vérifie par rapport au tableau userAnswers qui a la longueur de quizData.questions d'origine
+                // Nous devons mapper l'index de currentQuizQuestions à l'index de quizData.questions d'origine pour obtenir la réponse de l'utilisateur
+                // Cette logique doit être ajustée si userAnswers est toujours basé sur le quizData.questions complet d'origine.
+                // Pour simplifier, supposons que userAnswers est réinitialisé et rempli en fonction des questions du quiz *actuel*.
+
+                // Si une question a été répondue dans le sous-ensemble actuel
+                if (userAnswers[i] !== null) {
+                    const originalOptionIndex = userAnswers[i]; // C'est l'index d'origine de l'option
+                    const isCorrect = questionsSource[i].answerOptions[originalOptionIndex].isCorrect;
+                    if (isCorrect) {
+                        correctCount++;
+                    } else {
+                        incorrectCount++;
+                    }
+                } else {
+                    unansweredCount++;
+                }
+            }
+
+            const correctPercentage = (correctCount / totalQuestions) * 100;
+            const incorrectPercentage = (incorrectCount / totalQuestions) * 100;
+            unansweredPercentage = 100 - correctPercentage - incorrectPercentage; // Recalcule pour éviter les problèmes de virgule flottante
+
+            correctProgressElement.style.width = `${correctPercentage}%`;
+            incorrectProgressElement.style.width = `${incorrectPercentage}%`;
+            unansweredProgressElement.style.width = `${unansweredPercentage}%`;
+
+            // Affiche les pourcentages à l'intérieur des sections colorées si > 0
+            correctProgressElement.textContent = correctPercentage > 0 ? `${correctPercentage.toFixed(0)}%` : '';
+            incorrectProgressElement.textContent = incorrectPercentage > 0 ? `${incorrectPercentage.toFixed(0)}%` : '';
+            unansweredProgressElement.textContent = unansweredPercentage > 0 ? `${unansweredPercentage.toFixed(0)}%` : '';
+        }
+
+        // Fonction pour mettre à jour l'affichage du score en direct
+        function updateLiveScoreDisplay() {
+            const questionsSource = quizData.currentQuizQuestions || quizData.questions;
+            const totalQuestions = questionsSource.length;
+            const currentQuestionNumber = currentQuestionIndex + 1;
+            // Le score affiché est le score total (points de base + bonus)
+            liveScoreDisplay.textContent = `Score total : ${score} points - Question ${currentQuestionNumber} / ${totalQuestions}`;
+            updateTimerDisplay(); // Met également à jour l'affichage des vies si en mode survie
+        }
+
+        // Fonction pour afficher les résultats finaux du quiz
+        function showResults(timeRanOut = false, noLivesLeft = false) {
+            stopTimer(); // Arrête le minuteur lorsque les résultats sont affichés
+            showScreen('resultsScreen');
+
+            const questionsSource = quizData.currentQuizQuestions || quizData.questions;
+            const totalQuestions = questionsSource.length;
+            let finalCorrectCountQuestions = 0; // Nombre de questions répondues correctement
+            let finalIncorrectCountQuestions = 0; // Nombre de questions répondues incorrectement
+            let finalUnansweredCountQuestions = 0; // Nombre de questions non répondues
+
+            for (let i = 0; i < totalQuestions; i++) {
+                if (userAnswers[i] !== null) {
+                    const originalOptionIndex = userAnswers[i];
+                    const isCorrect = questionsSource[i].answerOptions[originalOptionIndex].isCorrect;
+                    if (isCorrect) {
+                        finalCorrectCountQuestions++;
+                    } else {
+                        finalIncorrectCountQuestions++;
+                    }
+                } else {
+                    finalUnansweredCountQuestions++;
+                }
+            }
+
+            const finalCorrectPercentageQuestions = ((finalCorrectCountQuestions / totalQuestions) * 100).toFixed(0);
+            
+            let feedbackMessage = "";
+            let celebrationContent = "";
+            let shareFeedbackMessage = ""; // Message spécifique pour le partage
+
+            if (timeRanOut) {
+                feedbackMessage = `Le temps est écoulé ! Votre score final est de ${score} points.`;
+                shareFeedbackMessage = `Le temps est écoulé ! J'ai eu ${finalCorrectPercentageQuestions}% de réussite.`;
+            } else if (noLivesLeft) {
+                feedbackMessage = `Vous n'avez plus de vies ! Votre score final est de ${score} points.`;
+                shareFeedbackMessage = `Plus de vies ! J'ai eu ${finalCorrectPercentageQuestions}% de réussite.`;
+            }
+            else if (finalCorrectPercentageQuestions <= 25) {
+                feedbackMessage = `Votre score de ${finalCorrectPercentageQuestions}% de réussite est un bon début. Il est temps de revoir vos cours ! Continuez votre apprentissage en pratiquant et en regardant les lives. C'est essentiel pour progresser. 📚💡`;
+                shareFeedbackMessage = `Mon résultat est de ${finalCorrectPercentageQuestions}% de réussite. Il est temps de revoir mes cours et de progresser !`;
+            } else if (finalCorrectPercentageQuestions <= 50) {
+                feedbackMessage = `Votre score de ${finalCorrectPercentageQuestions}% de réussite est encourageant. C'est bien, continuez ainsi ! Le prochain palier est 75%. Pour y arriver, continuez à progresser, suivez les lives, appliquez les concepts et faites de la veille sociale. 💪🚀`;
+                shareFeedbackMessage = `Mon score est de ${finalCorrectPercentageQuestions}% de réussite. C'est encourageant, mais je vise plus haut !`;
+            } else if (finalCorrectPercentageQuestions <= 75) {
+                feedbackMessage = `Félicitations pour votre score de ${finalCorrectPercentageQuestions}% de réussite ! Vos efforts portent leurs fruits. Vous pouvez continuer à vous performer et viser l'excellence. 🌟🎯`;
+                shareFeedbackMessage = `J'ai obtenu ${finalCorrectPercentageQuestions}% de réussite ! Très bon score, je continue de m'améliorer !`;
+            } else { // > 75% jusqu'à 100%
+                feedbackMessage = `Félicitations pour votre score de ${finalCorrectPercentageQuestions}% de réussite ! 🎉🔥 Vous maîtrisez le sujet ! N'oubliez pas que nous sommes une équipe, motivez la troupe et le transfert de compétences est important : aidez les autres personnes. 🏅🎓`;
+                celebrationContent = `
+                    <p class="text-2xl font-bold text-yellow-500 mt-4">🎉🔥 MÉDAILLE D'OR ! 🔥🎉</p>
+                    <p class="text-xl font-semibold text-blue-600">Diplôme de Maîtrise du Règlement du Salaire !</p>
+                `;
+                shareFeedbackMessage = `J'ai atteint ${finalCorrectPercentageQuestions}% de réussite ! C'est la fête ! Je suis prêt à partager mes connaissances et à motiver la troupe !`;
+            }
+
+            const resultsDiv = document.getElementById('resultsScreen');
+            // Obtient le titre du quiz à partir de la balise <title>
+            const quizTitle = document.title;
+            // Construit le message partageable pour Discord/WhatsApp
+            const shareMessage = `Bonjour à tous ! 👋 J'ai terminé le quiz "${quizTitle}" avec ${finalCorrectPercentageQuestions}% de réussite (Score total : ${score} points). ${shareFeedbackMessage} Bonne journée ! ✨`;
+
+            // Met à jour les statistiques historiques
+            let stats = JSON.parse(localStorage.getItem('quizStats')) || {
+                bestScore: 0,
+                totalAttempts: 0,
+                totalCorrectAnswersOverall: 0,
+                totalQuestionsAnsweredOverall: 0
+            };
+
+            stats.totalAttempts++;
+            stats.totalCorrectAnswersOverall += finalCorrectCountQuestions;
+            stats.totalQuestionsAnsweredOverall += totalQuestions;
+            if (score > stats.bestScore) {
+                stats.bestScore = score;
+            }
+            localStorage.setItem('quizStats', JSON.stringify(stats));
+
+            const averageSuccessRate = stats.totalQuestionsAnsweredOverall > 0 ? ((stats.totalCorrectAnswersOverall / stats.totalQuestionsAnsweredOverall) * 100).toFixed(0) : 0;
+
+            resultsDiv.innerHTML = `
+                <div class="score-display">Votre score final : ${score} points sur un maximum de ${totalQuestions * (1 + BONUS_POINTS)} (base + bonus)</div>
+                <p class="text-lg text-gray-700 mb-4">Questions correctement répondues : ${finalCorrectCountQuestions} sur ${totalQuestions} (${finalCorrectPercentageQuestions}% de réussite)</p>
+
+                <div class="progress-bar final-results-chart-container">
+                    <div class="progress-section correct-section" style="width: ${finalCorrectPercentageQuestions}%;">
+                        ${finalCorrectPercentageQuestions > 0 ? `${finalCorrectPercentageQuestions}%` : ''}
+                    </div>
+                </div>
+
+                <p class="text-xl font-semibold text-gray-800 mt-6">${feedbackMessage}</p>
+                ${celebrationContent}
+
+                <div class="mt-8 p-4 bg-gray-100 rounded-lg shadow-inner">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Vos Statistiques Personnelles</h3>
+                    <p class="text-lg stats-text-color">Meilleur score : <span class="font-bold">${stats.bestScore}</span> points</p>
+                    <p class="text-lg stats-text-color">Nombre de tentatives : <span class="font-bold">${stats.totalAttempts}</span></p>
+                    <p class="text-lg stats-text-color">Taux de réussite moyen : <span class="font-bold">${averageSuccessRate}%</span></p>
+                </div>
+
+                <div class="mt-8 p-4 bg-gray-100 rounded-lg shadow-inner">
+                    <p class="text-lg font-semibold text-gray-700 mb-2">Partagez vos résultats et échangez !</p>
+                    <textarea id="shareableResult" class="w-full p-2 border rounded-md text-gray-700 bg-gray-50 mb-4" rows="4" readonly>${shareMessage}</textarea>
+                    <button id="copyResultButton" class="button bg-green-500 hover:bg-green-600 mb-4">Copier le message de partage</button>
+                    <p class="text-md text-gray-600 mb-2">Rejoignez la discussion sur :</p>
+                    <a href="https://discord.gg/cBnBkGDFgk" target="_blank" class="inline-block mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                        Discord 🔥 Payroll Boss Elite Club : Le Hub Paie & Progrès 📈
+                    </a>
+                    <a href="https://chat.whatsapp.com/EtV0ux5ipAG5JDhopzo0ut" target="_blank" class="inline-block mt-2 ml-2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                        WhatsApp 🔥 | Payroll Boss Elite Club 👑| Infos & Actus
+                    </a>
+                </div>
+                <button id="reviewButton" class="button mt-6">Revoir les réponses</button>
+                <button id="restartButton" class="button mt-6 ml-4">Recommencer le Quiz</button>
+                <button id="glossaryButtonResults" class="button mt-6 ml-4 bg-gray-600 hover:bg-gray-700">Glossaire</button>
+                <button id="certificateButton" class="button mt-6 ml-4 bg-yellow-500 hover:bg-yellow-600 ${finalCorrectPercentageQuestions >= 75 ? '' : 'hidden'}">Voir mon Certificat</button>
+            `;
+
+            // Réattache les écouteurs d'événements pour les boutons de l'écran des résultats
+            document.getElementById('copyResultButton').addEventListener('click', () => {
+                const shareableResult = document.getElementById('shareableResult');
+                shareableResult.select();
+                document.execCommand('copy');
+                shareableResult.style.borderColor = '#10B981';
+                shareableResult.style.boxShadow = '0 0 0 2px #10B981';
+                setTimeout(() => {
+                    shareableResult.style.borderColor = '';
+                    shareableResult.style.boxShadow = '';
+                }, 1500);
+            });
+            document.getElementById('reviewButton').addEventListener('click', showReviewMode);
+            document.getElementById('restartButton').addEventListener('click', restartQuiz);
+            document.getElementById('glossaryButtonResults').addEventListener('click', showGlossary);
+            if (finalCorrectPercentageQuestions >= 75) {
+                document.getElementById('certificateButton').addEventListener('click', showCertificate);
+            }
+            applyTheme(localStorage.getItem('theme') || 'light'); // Réapplique le thème au nouveau contenu des résultats
+        }
+
+        // --- Fonctions du mode révision ---
+        function showReviewMode() {
+            showScreen('reviewModeScreen');
+            const reviewQuestionsContainer = document.getElementById('reviewQuestionsContainer');
+            reviewQuestionsContainer.innerHTML = ''; // Efface le contenu précédent
+
+            const questionsSource = quizData.currentQuizQuestions || quizData.questions; // Utilise les questions réelles utilisées dans l'instance du quiz
+
+            questionsSource.forEach((questionData, index) => {
+                const userAnswerIndex = userAnswers[index]; // Le tableau userAnswers correspond à l'index de questionsSource
+                const isAnswered = userAnswerIndex !== null;
+                const userAnswerText = isAnswered ? questionData.answerOptions[userAnswerIndex].text : "Non répondu";
+                const isCorrect = isAnswered ? questionData.answerOptions[userAnswerIndex].isCorrect : false;
+                const correctAnswerText = questionData.answerOptions.find(opt => opt.isCorrect).text;
+                // Justification de secours si l'utilisateur n'a pas répondu ou a choisi une option sans justification spécifique
+                const rationaleText = questionData.answerOptions[userAnswers[index]]?.rationale || questionData.answerOptions.find(opt => opt.isCorrect).rationale;
+
+
+                const questionCard = document.createElement('div');
+                questionCard.classList.add('review-question-card', 'rounded-xl', 'p-4', 'mb-4', 'shadow-md');
+                // Applique la classe du mode sombre si le corps l'a
+                if (document.body.classList.contains('dark-mode')) {
+                    questionCard.classList.add('dark-mode');
+                }
+
+                questionCard.innerHTML = `
+                    <div class="question-text">${index + 1}. ${questionData.question}</div>
+                    <p class="user-answer">
+                        <span class="result-icon">${isAnswered ? (isCorrect ? '✅' : '❌') : '❓'}</span>
+                        Votre réponse : ${userAnswerText}
+                    </p>
+                    <p class="correct-answer">
+                        Bonne réponse : ${correctAnswerText}
+                    </p>
+                    <div class="rationale">
+                        <strong>Raisonnement :</strong> ${rationaleText}
+                    </div>
+                `;
+                reviewQuestionsContainer.appendChild(questionCard);
+            });
+        }
+
+        // --- Fonctions du glossaire ---
+        function showGlossary() {
+            showScreen('glossaryScreen');
+            const glossaryContent = document.getElementById('glossaryContent');
+            glossaryContent.innerHTML = ''; // Efface le contenu précédent
+
+            glossaryData.sort((a, b) => a.term.localeCompare(b.term)); // Trie par ordre alphabétique
+
+            glossaryData.forEach(item => {
+                const termDiv = document.createElement('div');
+                termDiv.classList.add('glossary-term', 'rounded-xl', 'p-3', 'mb-3');
+                if (document.body.classList.contains('dark-mode')) {
+                    termDiv.classList.add('dark-mode');
+                }
+                termDiv.innerHTML = `
+                    <h3>${item.term}</h3>
+                    <p>${item.definition}</p>
+                `;
+                glossaryContent.appendChild(termDiv);
+            });
+        }
+
+        // --- Fonctions du certificat ---
+        function showCertificate() {
+            showScreen('certificateScreen');
+            const certificateScoreElement = document.getElementById('certificateScore');
+            const certificateDateElement = document.getElementById('certificateDate');
+            const userNameInput = document.getElementById('userNameInput');
+
+            certificateScoreElement.textContent = `${score} points`;
+            certificateDateElement.textContent = new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            // Charge le nom d'utilisateur sauvegardé si existe
+            const savedUserName = localStorage.getItem('userName');
+            if (savedUserName) {
+                userNameInput.value = savedUserName;
+            }
+
+            // Sauvegarde le nom d'utilisateur lors du changement d'entrée
+            userNameInput.addEventListener('input', () => {
+                localStorage.setItem('userName', userNameInput.value);
+            });
+
+            document.getElementById('printCertificateButton').addEventListener('click', printCertificate);
+            document.getElementById('backToResultsFromCertificate').addEventListener('click', () => showResults(false));
+            applyTheme(localStorage.getItem('theme') || 'light'); // Réapplique le thème au contenu du certificat
+        }
+
+        function printCertificate() {
+            // Crée une nouvelle fenêtre/onglet pour l'impression
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write('<!DOCTYPE html>');
+            printWindow.document.write('<html lang="fr"><head><title>Certificat de Réussite</title>');
+            // Copie les styles CSS pertinents pour l'impression
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                body {
+                    font-family: 'Inter', sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    background-color: white; /* Force blanc pour l'impression */
+                    color: black; /* Force texte noir */
+                }
+                .certificate-print-container {
+                    width: 210mm; /* Largeur A4 */
+                    height: 297mm; /* Hauteur A4 */
+                    padding: 20mm;
+                    border: 5mm solid #c2185b; /* Bordure rose foncé */
+                    box-shadow: 0 0 0 10px #f48fb1; /* Ombre rose claire */
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                    box-sizing: border-box;
+                    position: relative;
+                }
+                .certificate-print-container h2 {
+                    font-size: 2.5rem;
+                    font-weight: 700;
+                    color: #1d4ed8; /* Bleu profond */
+                    margin-bottom: 20px;
+                }
+                .certificate-print-container p {
+                    font-size: 1.2rem;
+                    margin-bottom: 10px;
+                    color: #4a5568;
+                }
+                .certificate-print-container .user-name {
+                    font-size: 2.5rem; /* Nom plus grand */
+                    font-weight: bold;
+                    color: #c2185b; /* Rose foncé pour le nom */
+                    margin: 10px 0 20px 0;
+                    border-bottom: 2px solid #c2185b; /* Soulignement */
+                    padding-bottom: 5px;
+                    display: inline-block; /* Pour que la bordure s'adapte au texte */
+                }
+                .certificate-print-container .score-text {
+                    font-size: 1.8rem;
+                    font-weight: 600;
+                    color: #4a5568;
+                }
+                .certificate-print-container .score-value {
+                    font-size: 3.5rem; /* Score très grand */
+                    font-weight: bold;
+                    color: #1d4ed8; /* Bleu profond */
+                    margin: 10px 0;
+                }
+                .certificate-print-container .date-text {
+                    font-size: 1.1rem;
+                    color: #4a5568;
+                    margin-top: 20px;
+                }
+                .certificate-print-container .club-logo-text {
+                    font-size: 1.8rem; /* Logo texte plus grand */
+                    font-weight: bold;
+                    color: #c2185b; /* Rose foncé */
+                    margin-top: 40px;
+                }
+                .certificate-print-container .signature {
+                    margin-top: 30px;
+                    font-style: italic;
+                    font-weight: 600;
+                    font-size: 1.3rem;
+                    color: #333; /* Gris foncé pour la signature */
+                }
+                /* Masquer les éléments non pertinents pour l'impression */
+                .certificate-print-container button,
+                .certificate-print-container input {
+                    display: none !important;
+                }
+            `);
+            printWindow.document.write('</style>');
+            printWindow.document.write('</head><body>');
+
+            // Contenu du certificat pour l'impression
+            const userName = userNameInput.value || 'Nom non spécifié';
+            const scoreValue = certificateScoreElement.textContent;
+            const dateValue = certificateDateElement.textContent;
+
+            printWindow.document.write(`
+                <div class="certificate-print-container">
+                    <h2>Certificat de Réussite</h2>
+                    <p>Ce certificat est décerné à</p>
+                    <p class="user-name">${userName}</p>
+                    <p class="score-text">pour avoir complété le Quiz sur la Présentation de la Gestion de la Paie avec un score de</p>
+                    <p class="score-value">${scoreValue}</p>
+                    <p class="date-text">en date du ${dateValue}</p>
+                    <p class="club-logo-text">🔥Payroll Boss Elite Club 👑</p>
+                    <p class="signature">✨Énervante Énervante 🥳</p>
+                </div>
+            `);
+
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+
+        // --- Écouteurs d'événements ---
+        // Enveloppe l'assignation des écouteurs d'événements dans DOMContentLoaded pour s'assurer que les éléments existent
+        document.addEventListener('DOMContentLoaded', () => {
+            assignDOMElements(); // Assigne les éléments une fois que le DOM est prêt
+
+            // Définit l'année actuelle dans le pied de page (déplacé ici pour s'assurer que copyrightTextElement est disponible)
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            copyrightTextElement.textContent = `🔥Payroll Boss Elite Club 👑. Tous droits réservés.`; // REMPLACEZ PAR VOTRE TEXTE DE COPYRIGHT DÉFINITIF
+
+
+            themeSwitcher.addEventListener('click', toggleTheme);
+            soundToggle.addEventListener('click', () => {
+                soundEnabled = !soundEnabled;
+                soundToggle.textContent = soundEnabled ? '🔊 Muet' : '🔇 Activer son';
+                localStorage.setItem('soundEnabled', soundEnabled); // Sauvegarde la préférence sonore
+            });
+
+            startButton.addEventListener('click', () => startQuiz(false));
+            continueButton.addEventListener('click', () => startQuiz(true));
+            glossaryButtonStart.addEventListener('click', showGlossary); // Écouteur d'événement pour le bouton du glossaire sur l'écran de démarrage
+            
+
+            nextButton.addEventListener('click', () => {
+                const questionsSource = quizData.currentQuizQuestions || quizData.questions;
+                if (currentQuestionIndex < questionsSource.length - 1) {
+                    currentQuestionIndex++; // Passe à la question suivante
+                    displayQuestion(); // Affiche la nouvelle question
+                } else {
+                    showResults(); // Si c'est la dernière question, affiche les résultats
+                }
+            });
+
+            prevButton.addEventListener('click', () => {
+                if (currentQuestionIndex > 0) {
+                    currentQuestionIndex--; // Revient à la question précédente
+                    displayQuestion(); // Affiche la nouvelle question
+                } else {
+                    // Si sur la première question et essaie de revenir en arrière, réaffiche simplement
+                    displayQuestion();
+                }
+            });
+
+            restartButton.addEventListener('click', restartQuiz);
+            reviewButton.addEventListener('click', showReviewMode);
+            backToResultsButton.addEventListener('click', () => showResults(false)); // Revient à l'écran des résultats
+            backToStartFromGlossary.addEventListener('click', loadInitialState); // Revient du glossaire à l'écran de démarrage
+
+            // Chargement initial de l'état du quiz
+            loadInitialState();
+        });
+
+
+        function restartQuiz() {
+            clearProgress();
+            currentQuestionIndex = 0; // Réinitialise l'index de la question
+            score = 0; // Réinitialise le score
+            userAnswers = new Array(quizData.questions.length).fill(null); // Réinitialise toutes les réponses à null
+            answeredCorrectly.fill(false); // Réinitialise le suivi de la justesse
+            firstAttemptBonusApplied.fill(false); // Réinitialise le suivi du bonus
+            timeLeft = QUIZ_DURATION_SECONDS; // Réinitialise le minuteur
+            lives = 3; // Réinitialise les vies
+            stopTimer(); // S'assure que le minuteur est arrêté
+            updateTimerDisplay(); // Met à jour l'affichage
+            loadInitialState(); // Affiche l'écran de démarrage avec un état frais
+        }
+
+        // --- État de chargement initial ---
+        function loadInitialState() {
+            // Charge la préférence sonore
+            const savedSoundEnabled = localStorage.getItem('soundEnabled');
+            if (savedSoundEnabled !== null) {
+                soundEnabled = JSON.parse(savedSoundEnabled);
+            }
+            if (soundToggle) { // Vérifie si soundToggle existe avant de le mettre à jour
+                soundToggle.textContent = soundEnabled ? '🔊 Muet' : '🔇 Activer son';
+            }
+
+            // Assure que le sélecteur de mode de jeu reflète le mode chargé
+            if (gameModeSelect) { // Vérifie si gameModeSelect existe avant de le mettre à jour
+                gameModeSelect.value = gameMode;
+            }
+            // Assure que le sélecteur du nombre de questions reflète le total disponible ou la préférence sauvegardée
+            if (numQuestionsSelect) { // Vérifie si numQuestionsSelect existe avant de le mettre à jour
+                numQuestionsSelect.value = quizData.currentQuizQuestions ? quizData.currentQuizQuestions.length : 'all';
+            }
+            
+            if (loadProgress()) {
+                // S'il y a une progression sauvegardée, affiche le bouton Continuer
+                if (continueButton) continueButton.classList.remove('hidden');
+                updateTimerDisplay(); // Affiche le temps et les vies sauvegardés
+            } else {
+                // Pas de progression sauvegardée, cache le bouton Continuer
+                if (continueButton) continueButton.classList.add('hidden');
+                // Initialise pour un nouveau départ basé sur "toutes" les questions par défaut
+                quizData.currentQuizQuestions = quizData.questions; // Par défaut, toutes les questions
+                QUIZ_DURATION_SECONDS = quizData.currentQuizQuestions.length * QUIZ_DURATION_SECONDS_PER_QUESTION;
+                timeLeft = QUIZ_DURATION_SECONDS;
+                lives = 3; // Réinitialise les vies si pas de progression
+                updateTimerDisplay(); // Affiche le temps et les vies initiaux
+            }
+            showScreen('startScreen');
+        }
+    </script>
+</body>
+</html>
